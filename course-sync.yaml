@@ -1,0 +1,106 @@
+name: course-sync
+description: |
+  自动同步飞书妙记到 Base 表格课程记录。
+  当用户发送 Base 链接或说"同步课程"时触发。
+  流程：脚本拉取候选妙记并抓取数据 → Claude 直接判断该不该录及分类 → 脚本写入 Base。
+  不需要任何外部 LLM API key。
+
+triggers:
+  - /course-sync
+  - 同步课程
+  - 同步妙记
+  - https://wlbyzcky.feishu.cn/wiki/TGGww8zijiQF2xk77tGcLYFtnW1
+  - https://wlbyzcky.feishu.cn/wiki/TGGww8zijiQF2xk77tGcLYFtnW1?from=from_copylink
+
+prompt: |
+  用户想要同步飞书妙记到 Base 课程表格。请按以下步骤执行：
+
+  ## 步骤 1：环境检查与修复
+  运行脚本的环境检查：
+  ```bash
+  python3 /Users/moinsky/sync_feishu_minutes.py --check-env
+  ```
+
+  如果输出显示 `lark-cli=❌`：
+  - 脚本在非交互式环境下可能无法自动安装，请检查 `~/.local/bin/lark-cli` 是否存在
+  - 如果不存在，告知用户手动安装：https://github.com/larksuite/lark-cli/releases
+
+  如果输出显示 `cookies=❌`：
+  - 如果是交互式环境，脚本已经尝试自动打开浏览器，请让用户登录 wlbyzcky.feishu.cn 的妙记页面
+  - 如果仍然失败，可以用下面的 Python 脚本手动导出：
+    ```python
+    from playwright.sync_api import sync_playwright
+    import json
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto('https://wlbyzcky.feishu.cn/minutes/me')
+        input('登录完成后按回车...')
+        cookies = context.cookies()
+        with open('/tmp/feishu_cookies.json', 'w') as f:
+            json.dump({'cookies': cookies}, f)
+        browser.close()
+    ```
+
+  如果 lark-cli 已安装但认证失败：
+  - 请让用户执行 `lark-cli auth login` 完成认证
+
+  **只有在 lark-cli 和 cookies 都就绪后，才继续下一步。**
+
+  ## 步骤 2：收集候选数据
+  运行：
+  ```bash
+  python3 /Users/moinsky/sync_feishu_minutes.py --collect-only
+  ```
+  这个命令会输出 `/tmp/minutes_candidates.json`。
+
+  ## 步骤 3：Claude 判断（由你直接完成）
+  读取 `/tmp/minutes_candidates.json`。
+
+  你的身份是「课程记录审核助手」。你面前是收录中传考研相关课程的 Base 表格。
+
+  判断标准：
+  - **应该录入**：正式课程、公开课、模拟面试、押题课、复试课、报考分析课、班会课、开班课、写作指导课等与学生培训相关的内容。
+  - **不应该录入**：内部闲聊会议、临时视频会议、OPC 培训、营前培训、个人成长讨论、园丁会议、非学生培训类的内部会议等。
+
+  对 `candidates` 数组中的每一条，输出一个判断对象，字段如下：
+  - `token`: 保持原值
+  - `raw_name`: 保持原值
+  - `url`: 保持原值
+  - `date`: 保持原值
+  - `duration`: 保持原值
+  - `owner`: 保持原值
+  - `participant_count`: 保持原值
+  - `should_record`: true/false
+  - `course_name`: 优化后的课程名称（去除参会人名单等冗余信息）
+  - `course_year`: 根据 date 推断，如 2026 年开课为 "27考研"
+  - `course_category`: 从以下分类中选择最匹配的一个：
+    公开课、班会课、报考分析课、人类简史、世界文明史、中国文学史、哲学导论、媒介与社会、艺术学概论、百日押题课、模考讲解课、材料评议课、复试讲解课、其他课程、783主题写作、785艺术作品评论、783/785通用
+  - `importance`: "必刷课程" 或 "常规课程"
+  - `reasoning`: 一句话判断理由（用于报告）
+
+  判断完成后，使用 Write 或 Bash 工具生成 `/tmp/minutes_judgments.json`，格式如下：
+  ```json
+  {
+    "judgments": [
+      { ... }
+    ]
+  }
+  ```
+
+  如果 `candidates` 为空数组，直接跳到总结报告。
+
+  ## 步骤 4：执行写入 Base
+  运行：
+  ```bash
+  python3 /Users/moinsky/sync_feishu_minutes.py --apply-judgments
+  ```
+
+  ## 步骤 5：总结报告
+  请用中文总结：
+  1. 发现了多少条新妙记
+  2. Claude 判断跳过多少条、成功写入/更新多少条、失败多少条
+  3. 列出被跳过的记录及理由
+  4. 列出成功写入的记录（课程名称、年份、分类、重要程度、参与人数）
+  5. 如有失败，说明原因及建议

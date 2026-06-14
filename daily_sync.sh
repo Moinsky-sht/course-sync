@@ -38,9 +38,23 @@ if [[ "$MODE" == "full" || "$MODE" == "collect" ]]; then
   log "=== Step 1: 收集候选 ==="
   python3 scripts/course_sync_lark.py --collect-only
 
-  log "=== Step 2: 抓参与人数 ==="
-  python3 scripts/fetch_speakers_via_browser.py \
-    --from-candidates /tmp/minutes_candidates.json
+  # 检查 mavis browser 是否在线
+  log "=== Step 1.5: 检查 mavis browser 连接 ==="
+  if mavis browser status 2>&1 | grep -q "Native host: connected"; then
+    log "  ✅ mavis browser 已连接"
+  else
+    log "  ⚠️ mavis browser 未连接 (Native host: not connected)"
+    log "     Edge 浏览器扩展可能已断开 — 跳到 Step 2.5"
+    log "     参与人数会留空，judgment 时用 0"
+    SKIP_BROWSER=1
+  fi
+
+  if [[ "${SKIP_BROWSER:-0}" != "1" ]]; then
+    log "=== Step 2: 抓参与人数 ==="
+    python3 scripts/fetch_speakers_via_browser.py \
+      --from-candidates /tmp/minutes_candidates.json || \
+      log "  ⚠️ 抓取失败（部分可能 None），可手动重试"
+  fi
 fi
 
 if [[ "$MODE" == "full" ]]; then

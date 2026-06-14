@@ -76,7 +76,7 @@ def log(msg):
     print(f"[{time.strftime('%H:%M:%S')}] {msg}")
 
 
-def get_participant_count(token):
+def get_participant_count(token, max_retries=2):
     """Navigate to a minute detail page and extract the participant count.
 
     飞书妙记详情页有两个数字概念:
@@ -92,39 +92,57 @@ def get_participant_count(token):
       </div>
     总参与人数 = K + M
 
-    Returns int or None on failure.
+    Returns int or None on failure. Retries on cold cache.
     """
     url = f"https://{HOST}/minutes/{token}"
-    nav = mavis_browser("navigate", {"url": url})
-    if not nav.get("ok", True) and "_raw_stderr" in nav:
-        log(f"  navigate failed: {nav.get('_raw_stderr', '')[:200]}")
-        return None
+    for attempt in range(1, max_retries + 2):
+        nav = mavis_browser("navigate", {"url": url})
+        if not nav.get("ok", True) and "_raw_stderr" in nav:
+            log(f"  navigate failed: {nav.get('_raw_stderr', '')[:200]}")
+            return None
 
-    time.sleep(5)  # let SPA render (head header is last to populate)
+        time.sleep(7)  # let SPA render (head header is last to populate)
 
-    # 1) 主方案: 用 .meeting-info / [class*=meeting-info] / [class*=participant] 找
-    #    飞书妙记 header 区域用这个 class 渲染参与人 (avatar group)
-    #    class="ud__avatar-group-stacked" 包含 K 个头像 + 一个 ud__avatar-neutral
-    out = mavis_browser("query", {
-        "selector": ".meeting-info, [class*=meeting-info], [class*=participant]",
-        "what": "exists"
-    })
-    exists_text = out.get("content", "") if isinstance(out, dict) else ""
-    # "+4" 形式（来自 ud__avatar-neutral 里的 +N 文本溢出）
-    plus_match = re.search(r"\+(\d+)", exists_text)
-    plus_n = int(plus_match.group(1)) if plus_match else 0
+        # 1) 主方案: 用 .meeting-info / [class*=meeting-info] / [class*=participant] 找
+        #    飞书妙记 header 区域用这个 class 渲染参与人 (avatar group)
+        out = mavis_browser("query", {
+            "selector": ".meeting-info, [class*=meeting-info], [class*=participant]",
+            "what": "exists"
+        })
+        exists_text = out.get("content", "") if isinstance(out, dict) else ""
+        plus_match = re.search(r"\+(\d+)", exists_text)
+        plus_n = int(plus_match.group(1)) if plus_match else 0
 
-    # 2) 抓页面里"发言人 (K)" 文本 — 这 K 是 avatar 数
-    out = mavis_browser("query", {"selector": "text=发言人", "what": "text"})
-    text = out.get("content", "") if isinstance(out, dict) else ""
-    sp_match = re.search(r"发言人 \((\d+)\)", text)
-    speaker_n = int(sp_match.group(1)) if sp_match else 0
+        # 2) 抓页面里"发言人 (K)" 文本 — 这 K 是 avatar 数
+        out = mavis_browser("query", {"selector": "text=发言人", "what": "text"})
+        text = out.get("content", "") if isinstance(out, dict) else ""
+        sp_match = re.search(r"发言人 \((\d+)\)", text)
+        speaker_n = int(sp_match.group(1)) if sp_match else 0
 
-    if speaker_n == 0 and plus_n == 0:
-        log(f"  no participants detected (selector probe: {exists_text!r})")
-        return None
+        if speaker_n > 0 or plus_n > 0:
+            return speaker_n + plus_n
 
-    return speaker_n + plus_n
+        # 兜底: 直接抓 avatar group 计数
+        out = mavis_browser("query", {
+            "selector": ".ud__avatar-group-stacked > .ud__avatar",
+            "what": "exists"
+        })
+        if isinstance(out, dict) and out.get("content"):
+            # exists 返回数量
+            try:
+                k = int(str(out["content"]).strip())
+                if k > 0:
+                    return k + plus_n
+            except (ValueError, TypeError):
+                pass
+
+        if attempt < max_retries + 1:
+            log(f"  retrying (attempt {attempt}/{max_retries})...")
+            time.sleep(2)
+        else:
+            log(f"  no participants detected (probe: {exists_text!r})")
+            return None
+    return None
 
 
 def load_candidates(path):

@@ -15,7 +15,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 cd "$SCRIPT_DIR"
 
 DAYS=7
@@ -36,10 +36,10 @@ log() { printf '[%s] %s\n' "$(date +%H:%M:%S)" "$*"; }
 
 if [[ "$MODE" == "full" || "$MODE" == "collect" ]]; then
   log "=== Step 1: 收集候选 ==="
-  python3 course_sync_lark.py --collect-only
+  python3 scripts/course_sync_lark.py --collect-only
 
   log "=== Step 2: 抓参与人数 ==="
-  python3 fetch_speakers_via_browser.py \
+  python3 scripts/fetch_speakers_via_browser.py \
     --from-candidates /tmp/minutes_candidates.json
 fi
 
@@ -51,16 +51,16 @@ if [[ "$MODE" == "full" ]]; then
   log
   if [[ -f /tmp/minutes_judgments.json ]]; then
     log "    检测到 /tmp/minutes_judgments.json — 自动应用"
-    python3 course_sync_lark.py --apply-judgments
+    python3 scripts/course_sync_lark.py --apply-judgments
   else
     log "    没有 judgments.json，跳过写 Base 步骤"
-    log "    你可以稍后运行: python3 course_sync_lark.py --apply-judgments"
+    log "    你可以稍后运行: python3 scripts/course_sync_lark.py --apply-judgments"
   fi
 fi
 
 if [[ "$MODE" == "full" || "$MODE" == "export" ]]; then
   log "=== Step 4: 导出给网站 ==="
-  python3 site_export.py
+  python3 scripts/site_export.py
 fi
 
 log "=== 完成 ==="

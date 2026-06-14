@@ -1,1 +1,23 @@
-IyDkuLTml7bmlofku7YKKi50bXAKKi5iYWsKKi5sb2cKCiMg57yW6L6R5ZmoCi5EU19TdG9yZQoudnNjb2RlLwouaWRlYS8KCiMgUHl0aG9uCl9fcHljYWNoZV9fLwoqLnB5YwoqLnB5bwoudmVudi8KdmVudi8KCiMg5pWP5oSf5pWw5o2u77yI5LiN6KaB5o+Q5Lqk77yJCi90bXAvZmVpc2h1X2Nvb2tpZXMuanNvbgovdG1wL21pbnV0ZXNfY2FuZGlkYXRlcy5qc29uCi90bXAvbWludXRlc19qdWRnbWVudHMuanNvbgovdG1wL3NwZWFrZXJfY291bnRzLmpzb24KL3RtcC9taW51dGVzX3N5bmNfcmVwb3J0Lmpzb24K
+# 临时文件
+*.tmp
+*.bak
+*.log
+
+# 编辑器
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 敏感数据（不要提交）
+/tmp/feishu_cookies.json
+/tmp/minutes_candidates.json
+/tmp/minutes_judgments.json
+/tmp/speaker_counts.json
+/tmp/minutes_sync_report.json

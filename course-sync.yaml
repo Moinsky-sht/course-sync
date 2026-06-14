@@ -1,1 +1,128 @@
-bmFtZTogY291cnNlLXN5bmMKZGVzY3JpcHRpb246IHwKICDoh6rliqjlkIzmraXpo57kuablppnorrDliLAgQmFzZSDooajmoLzor77nqIvorrDlvZXjgIIKICDlvZPnlKjmiLflj5HpgIEgQmFzZSDpk77mjqXmiJbor7Qi5ZCM5q2l6K++56iLIuaXtuinpuWPkeOAggogIOa1geeoi++8mmxhcmstY2xpIOaLieWPluWAmemAieWmmeiusCDihpIgbWF2aXMgYnJvd3NlciDmipPlj5HoqIDkurrmlbDph48g4oaSIENsYXVkZSDliKTmlq3or6XkuI3or6XlvZXlj4rliIbnsbsg4oaSIGxhcmstY2xpIOWGmeWFpSBCYXNl44CCCiAg5pu/5Luj5pen54mIIFBsYXl3cmlnaHQvY29va2llcyDmlrnmoYjjgILml6DpnIDku7vkvZXlpJbpg6ggTExNIEFQSSBrZXnjgIIKCnRyaWdnZXJzOgogIC0gL2NvdXJzZS1zeW5jCiAgLSDlkIzmraXor77nqIsKICAtIOWQjOatpeWmmeiusAogIC0gaHR0cHM6Ly93bGJ5emNreS5mZWlzaHUuY24vd2lraS9UR0d3dzh6aWppUUYyeGs3N3RHY0xZRnRuVzEKICAtIGh0dHBzOi8vd2xieXpja3kuZmVpc2h1LmNuL3dpa2kvVEdHd3c4emlqaVFGMnhrNzd0R2NMWUZ0blcxP2Zyb209ZnJvbV9jb3B5bGluawoKcHJvbXB0OiB8CiAg55So5oi35oOz6KaB5ZCM5q2l6aOe5Lmm5aaZ6K6w5YiwIEJhc2Ug6K++56iL6KGo5qC844CC6K+35oyJ5Lul5LiL5q2l6aqk5omn6KGM77yaCgogICMjIOatpemqpCAw77ya546v5aKD5qOA5p+lCiAg6L+Q6KGM77yaCiAgYGBgYmFzaAogIHB5dGhvbjMgY291cnNlX3N5bmNfbGFyay5weSAtLWNoZWNrLWVudgogIGBgYAogIOi+k+WHuuaYvuekuiBgbGFyay1jbGkg5bCx57uqICh1c2VyOiAuLi4pYCDmiY3nu6fnu63jgILlpoLmnpzlpLHotKXor7fmjInohJrmnKzmj5DnpLrlpITnkIbvvIhgbnBtIGkgLWcgbGFyay1jbGlg44CBYGxhcmstY2xpIGNvbmZpZyBpbml0YCDnrYnvvInjgIIKCiAgIyMg5q2l6aqkIDHvvJrmlLbpm4blgJnpgInlppnorrAKICDov5DooYzvvJoKICBgYGBiYXNoCiAgcHl0aG9uMyBjb3Vyc2Vfc3luY19sYXJrLnB5IC0tY29sbGVjdC1vbmx5CiAgYGBgCiAg6ISa5pys5Lya55SoIGxhcmstY2xpIOaQnOe0ouacgOi/kSA3IOWkqeeahOWmmeiusO+8iG93bmVyPW1lIOKGkiBwYXJ0aWNpcGFudD1tZSBmYWxsYmFja++8ie+8jOi+k+WHuiBgL3RtcC9taW51dGVzX2NhbmRpZGF0ZXMuanNvbmDjgIIKCiAgIyMg5q2l6aqkIDLvvJrmipPlj5blj5HoqIDkurrmlbDph4/vvIjlhbPplK7mraXpqqTvvIkKICDov5DooYzvvJoKICBgYGBiYXNoCiAgcHl0aG9uMyBmZXRjaF9zcGVha2Vyc192aWFfYnJvd3Nlci5weSAtLWZyb20tY2FuZGlkYXRlcyAvdG1wL21pbnV0ZXNfY2FuZGlkYXRlcy5qc29uCiAgYGBgCiAg6ISa5pys5Lya55SoICoqbWF2aXMgYnJvd3Nlcioq77yI55So5oi355qE55yf5a6eIENocm9tZS9FZGdlIOa1j+iniOWZqO+8jOW3sueZu+W9lemjnuS5pu+8ieaJk+W8gOavj+adoeWmmeiusOeahCBTUEEg6K+m5oOF6aG177yM5LuOIERPTSDkuK3or7vlj5Yi5Y+R6KiA5Lq6IChOKSLjgIIKCiAgKirliY3nva7mnaHku7YqKu+8iOS4gOasoeaAp++8ie+8mgogIC0gYG1hdmlzIGJyb3dzZXIgaW5zdGFsbGAg5bey6L+Q6KGMCiAgLSBDaHJvbWUvRWRnZSDlt7LliqDovb0gbWF2aXMgYnJvd3NlciDmianlsZXvvIhJRDogYHBwbm5mYWNuamdva2ZtYm5na2diZGdpaWdwYmZnZGJhYO+8iQogIC0g5rWP6KeI5Zmo5Lit5bey55m75b2V6aOe5LmmCgogIOi+k+WHuiBgL3RtcC9zcGVha2VyX2NvdW50cy5qc29uYOOAggoKICAjIyDmraXpqqQgM++8mkNsYXVkZSDliKTmlq0KICDor7vlj5YgYC90bXAvbWludXRlc19jYW5kaWRhdGVzLmpzb25gIOWSjCBgL3RtcC9zcGVha2VyX2NvdW50cy5qc29uYO+8jOWQiOW5tuaIkOWujOaVtOWAmemAieaVsOaNruOAggoKICDkvaDnmoTouqvku73mmK/jgIzor77nqIvorrDlvZXlrqHmoLjliqnmiYvjgI3jgILliKTmlq3moIflh4bvvJoKICAtICoq5bqU6K+l5b2V5YWlKirvvIhgc2hvdWxkX3JlY29yZDogdHJ1ZWDvvInvvJoKICAgIC0g5q2j5byP6K++56iL44CB5YWs5byA6K++44CB5qih5ouf6Z2i6K+V44CB5oq86aKY6K++44CB5aSN6K+V6K++44CB5oql6ICD5YiG5p6Q6K++44CB54+t5Lya6K++44CB5byA54+t6K++44CB5YaZ5L2c5oyH5a+86K++562J5LiO5a2m55Sf5Z+56K6t55u45YWz55qE5YaF5a65CiAgICAtICoq5LiUKiog5Y+C5LiO5Lq65pWw77yIc3BlYWtlcl9jb3VudO+8ieKJpSA1CiAgLSAqKuS4jeW6lOivpeW9leWFpSoq77yIYHNob3VsZF9yZWNvcmQ6IGZhbHNlYO+8ie+8mgogICAgLSDlhoXpg6jpl7LogYrkvJrorq7jgIHkuLTml7bop4bpopHkvJrorq7jgIFPUEMg5Z+56K6t44CB6JCl5YmN5Z+56K6t44CB5Liq5Lq65oiQ6ZW/6K6o6K6644CB5Zut5LiB5Lya6K6u44CB6Z2e5a2m55Sf5Z+56K6t57G755qE5YaF6YOo5Lya6K6uCiAgICAtIOWPguS4juS6uuaVsCA8IDXvvIjkuIDlr7nkuIDjgIHlsJHmlbDkurrkvJrorq7vvIkKCiAg5a+55q+P5LiA5p2h77yM6L6T5Ye65LiA5Liq5Yik5pat5a+56LGh77yM5a2X5q615aaC5LiL77yaCiAgLSBgdG9rZW5gOiDkv53mjIHljp/lgLwKICAtIGByYXdfbmFtZWA6IOS/neaMgeWOn+WAvAogIC0gYHVybGA6IOS/neaMgeWOn+WAvAogIC0gYGRhdGVgOiDkv53mjIHljp/lgLwKICAtIGBkdXJhdGlvbmA6IOS/neaMgeWOn+WAvAogIC0gYG93bmVyYDogb3Blbl9pZAogIC0gYG93bmVyX2lkYDogb3Blbl9pZAogIC0gYG93bmVyX25hbWVgOiDmmL7npLrlkI3vvIjku44gdXNlcl9uYW1lIOafpeivouaIluS7juWmmeiusCBvd25lcl9pZCDlj43mn6XvvIkKICAtIGBzaG91bGRfcmVjb3JkYDogdHJ1ZSAvIGZhbHNlCiAgLSBgY291cnNlX25hbWVgOiDkvJjljJblkI7nmoTor77nqIvlkI3np7DvvIjljrvpmaTlj4LkvJrkurrlkI3ljZXnrYnlhpfkvZnkv6Hmga/vvIkKICAtIGBjb3Vyc2VfeWVhcmA6IOagueaNriBkYXRlIOaOqOaWre+8jOWmgiAyMDI2IOW5tOW8gOivvuS4uiAiMjfogIPnoJQiCiAgLSBgY291cnNlX2NhdGVnb3J5YDog5LuOIEJhc2Ug55qEIGVudW0g5Lit6YCJ5oup5pyA5Yy56YWN55qE5LiA5Liq77yaCiAgICDlhazlvIDor77jgIHnj63kvJror77jgIHmiqXogIPliIbmnpDor77jgIHkurrnsbvnroDlj7LjgIHkuJbnlYzmlofmmI7lj7LjgIHkuK3lm73mloflrablj7LjgIHlk7Llrablr7zorrrjgIHlqpLku4vkuI7npL7kvJrjgIHoibrmnK/lrabmpoLorrrjgIHnmb7ml6Xmirzpopjor77jgIHmqKHogIPorrLop6Por77jgIHmnZDmlpnor4Torq7or77jgIHlpI3or5XorrLop6Por77jgIHlhbbku5bor77nqIvjgIE3ODPkuLvpopjlhpnkvZzjgIE3ODXoibrmnK/kvZzlk4Hor4TorrrjgIE3ODMvNzg16YCa55SoCiAgLSBgaW1wb3J0YW5jZWA6ICLlv4XliLfor77nqIsiIOaIliAi5bi46KeE6K++56iLIgogIC0gYHBhcnRpY2lwYW50X2NvdW50YDog5pW05pWw77yI5LuOIHNwZWFrZXJfY291bnRzLmpzb24g6K+75Y+W77yJCiAgLSBgcmVhc29uaW5nYDog5LiA5Y+l6K+d5Yik5pat55CG55SxCgogIOWIpOaWreWujOaIkOWQju+8jOS9v+eUqCBXcml0ZSDmiJYgQmFzaCDlt6XlhbfnlJ/miJAgYC90bXAvbWludXRlc19qdWRnbWVudHMuanNvbmDvvIzmoLzlvI/vvJoKICBgYGBqc29uCiAgewogICAgImp1ZGdtZW50cyI6IFsKICAgICAgeyAuLi4gfQogICAgXQogIH0KICBgYGAKCiAg5aaC5p6c5rKh5pyJ5YCZ6YCJ77yIYGNhbmRpZGF0ZXNgIOS4uuepuuaVsOe7hO+8ie+8jOebtOaOpei3s+WIsOaAu+e7k+aKpeWRiuOAggoKICAjIyDmraXpqqQgNO+8muaJp+ihjOWGmeWFpSBCYXNlCiAg6L+Q6KGM77yaCiAgYGBgYmFzaAogIHB5dGhvbjMgY291cnNlX3N5bmNfbGFyay5weSAtLWFwcGx5LWp1ZGdtZW50cwogIGBgYAogIOiEmuacrOS8mu+8mgogIDEuIOafpeivoiBCYXNlIOeOsOacieiusOW9le+8iOaMiSB0b2tlbiDntKLlvJXjgIFuYW1lIOe0ouW8le+8iQogIDIuIOWvueavj+adoSBgc2hvdWxkX3JlY29yZDogdHJ1ZWAg55qE5Yik5pat77ya5YWI5oyJIHRva2VuIOafpemHje+8jOWGjeaMiSBjb3Vyc2VfbmFtZSDmn6Xph40KICAgICAtIOaJvuWIsCDihpIg5pu05paw77yIdXBzZXJ0IHdpdGggLS1yZWNvcmQtaWTvvIkKICAgICAtIOayoeaJvuWIsCDihpIg5Yib5bu6CiAgMy4g6L6T5Ye6IGAvdG1wL21pbnV0ZXNfc3luY19yZXBvcnQuanNvbmDvvIjlkKsgc2tpcHBlZCAvIHdyaXR0ZW4gLyBmYWlsZWQg6K+m57uG5YiX6KGo77yJCgogICMjIOatpemqpCA177ya5oC757uT5oql5ZGKCiAg55So5Lit5paH5oC757uT77yaCiAgMS4g5Y+R546w5LqG5aSa5bCR5p2h5paw5aaZ6K6wCiAgMi4g5oiQ5Yqf5YaZ5YWlL+abtOaWsOWkmuWwkeadoeOAgei3s+i/h+WkmuWwkeadoeOAgeWksei0peWkmuWwkeadoQogIDMuIOWIl+WHuuiiq+i3s+i/h+eahOiusOW9leWPiueQhueUsQogIDQuIOWIl+WHuuaIkOWKn+WGmeWFpeeahOiusOW9le+8iOivvueoi+WQjeensOOAgeW5tOS7veOAgeWIhuexu+OAgemHjeimgeeoi+W6puOAgeWPguS4juS6uuaVsO+8iQogIDUuIOWmguacieWksei0pe+8jOivtOaYjuWOn+WboOWPiuW7uuiurgoKICAjIyDmlYXpmpzmjpLmn6UKICAtICoqYGxhcmstY2xpIOacquiupOivgWAqKu+8mui/kOihjCBgbGFyay1jbGkgY29uZmlnIGluaXRgIOmHjeaWsOi1sCBPQXV0aAogIC0gKirlppnorrDmkJzkuI3liLAqKu+8muajgOafpSB1c2VyIOi6q+S7veaYr+WQpuWcqCBgd2xieXpja3kuZmVpc2h1LmNuYCDln5/mnInorr/pl67mnYPpmZAKICAtICoqQmFzZSDlhpnlhaUgNDAxLzQwMyoq77ya5qOA5p+lIHVzZXIg6Lqr5Lu95piv5ZCm5pyJ6K+lIEJhc2Ug6KGo55qE6K+75YaZ5p2D6ZmQCiAgLSAqKm1hdmlzIGJyb3dzZXIgYGJyaWRnZSBub3QgY29ubmVjdGVkYCoq77yaQ2hyb21lIOaJqeWxleacquWKoOi9veaIliBuYXRpdmUgaG9zdCDmnKrms6jlhozvvIzph43mlrAgYG1hdmlzIGJyb3dzZXIgaW5zdGFsbGAKICAtICoq6K+m5oOF6aG16KKr6Lii5Zue55m75b2VKirvvJptYXZpcyBicm93c2VyIOayoeacieeUqOaIt+eZu+W9leaAge+8jOiuqeeUqOaIt+WcqOa1j+iniOWZqOS4reeZu+W9lemjnuS5pgo=
+name: course-sync
+description: |
+  自动同步飞书妙记到 Base 表格课程记录。
+  当用户发送 Base 链接或说"同步课程"时触发。
+  流程：lark-cli 拉取候选妙记 → mavis browser 抓参与人数 → Claude 判断该不该录及分类 → lark-cli 写入 Base。
+  替代旧版 Playwright/cookies 方案。无需任何外部 LLM API key。
+
+triggers:
+  - /course-sync
+  - 同步课程
+  - 同步妙记
+  - 每日课程同步
+  - 拉取最新课程
+  - https://wlbyzcky.feishu.cn/wiki/TGGww8zijiQF2xk77tGcLYFtnW1
+  - https://wlbyzcky.feishu.cn/wiki/TGGww8zijiQF2xk77tGcLYFtnW1?from=from_copylink
+
+prompt: |
+  用户想要同步飞书妙记到 Base 课程表格（也可能是为个人网站每日更新）。
+  请按以下步骤执行。
+
+  ## 步骤 0：环境检查
+  运行：
+  ```bash
+  python3 course_sync_lark.py --check-env
+  ```
+  输出显示 `lark-cli 就绪 (user: ...)` 才继续。如果失败请按脚本提示处理（`npm i -g lark-cli`、`lark-cli config init` 等）。
+
+  ## 步骤 1：收集候选妙记
+  运行：
+  ```bash
+  python3 course_sync_lark.py --collect-only
+  ```
+  脚本会用 lark-cli **3 路并集**搜索最近妙记：
+  1. `owner=me`（我创建的）
+  2. `participant=me`（我参与的）
+  3. 无 filter（捕获别人 share 给我但 owner/participant 都不是我的）
+
+  输出 `/tmp/minutes_candidates.json`。
+
+  ## 步骤 2：抓取参与人数
+  运行：
+  ```bash
+  python3 fetch_speakers_via_browser.py --from-candidates /tmp/minutes_candidates.json
+  ```
+  脚本会用 **mavis browser**（用户的真实 Chrome/Edge，已登录飞书）打开每条妙记的 SPA 详情页，从 DOM 中读取**参与人数**（= 头像数 + 溢出"+N" 文本，而不是只看"发言人 (N)"）。
+
+  **前置条件**（一次性）：
+  - `mavis browser install` 已运行
+  - Chrome/Edge 已加载 mavis browser 扩展（ID: `ppnnfacnjgokfmbngkgbdgiigpbfgdba`）
+  - 浏览器中已登录飞书
+
+  输出 `/tmp/speaker_counts.json`。
+
+  ## 步骤 3：Claude 判断
+  读取 `/tmp/minutes_candidates.json` 和 `/tmp/speaker_counts.json`，合并成完整候选数据。
+
+  你的身份是「课程记录审核助手」。判断标准：
+  - **应该录入**（`should_record: true`）：
+    - 正式课程、公开课、模拟面试、押题课、复试课、报考分析课、班会课、开班课、写作指导课等与学生培训相关的内容
+    - **且** 参与人数（participant_count）≥ 5
+  - **不应该录入**（`should_record: false`）：
+    - 内部闲聊会议、临时视频会议、OPC 培训、营前培训、个人成长讨论、园丁会议、非学生培训类的内部会议
+    - 参与人数 < 5（一对一、少数人会议）
+
+  对每一条，输出一个判断对象，字段如下：
+  - `token`: 保持原值
+  - `raw_name`: 保持原值
+  - `url`: 保持原值
+  - `date`: 保持原值
+  - `duration`: 保持原值
+  - `owner`: open_id
+  - `owner_id`: open_id
+  - `owner_name`: 显示名
+  - `should_record`: true / false
+  - `course_name`: 优化后的课程名称
+  - `course_year`: 根据 date 推断，如 2026 年开课为 "27考研"
+  - `course_category`: 从 Base 的 enum 中选择：
+    公开课、班会课、报考分析课、人类简史、世界文明史、中国文学史、哲学导论、媒介与社会、艺术学概论、百日押题课、模考讲解课、材料评议课、复试讲解课、其他课程、783主题写作、785艺术作品评论、783/785通用
+  - `importance`: "必刷课程" 或 "常规课程"
+  - `participant_count`: 整数（从 speaker_counts.json 读取）
+  - `reasoning`: 一句话判断理由
+
+  判断完成后，使用 Write 或 Bash 工具生成 `/tmp/minutes_judgments.json`。
+
+  如果没有候选（`candidates` 为空数组），直接跳到步骤 5。
+
+  ## 步骤 4：执行写入 Base
+  运行：
+  ```bash
+  python3 course_sync_lark.py --apply-judgments
+  ```
+  脚本会：
+  1. 查询 Base 现有记录（按 token 索引、name 索引）
+  2. 对每条 `should_record: true` 的判断：先按 token 查重，再按 course_name 查重
+     - 找到 → 更新（upsert with --record-id）
+     - 没找到 → 创建
+  3. 输出 `/tmp/minutes_sync_report.json`（含 skipped / written / failed 详细列表）
+
+  ## 步骤 5：导出给个人网站
+  运行：
+  ```bash
+  python3 site_export.py
+  ```
+  脚本会从 Base 拉全表，导出为：
+  - `courses.json` — 完整结构化数据
+  - `courses.md` — Markdown 表格
+  - `courses_index.json` — 按年份/类别分组
+  - `courses_latest.json` — 仅最近 7 天
+  - `stats.json` — 统计概览
+
+  默认输出到 `/tmp/site_export/`，可通过 `--output` 或 `COURSE_SYNC_OUTPUT_DIR` 改。
+
+  ## 步骤 6：总结报告
+  用中文总结：
+  1. 发现了多少条新妙记
+  2. 成功写入/更新多少条、跳过多少条、失败多少条
+  3. 列出被跳过的记录及理由
+  4. 列出成功写入的记录（课程名称、年份、分类、重要程度、参与人数）
+  5. 导出了哪些文件给网站
+  6. 如有失败，说明原因及建议
+
+  ## 故障排查
+  - **`lark-cli 未认证`**：运行 `lark-cli config init` 重新走 OAuth
+  - **妙记搜不到**：检查 user 身份是否在 `wlbyzcky.feishu.cn` 域有访问权限
+  - **Base 写入 401/403**：检查 user 身份是否有该 Base 表的读写权限
+  - **mavis browser `bridge not connected`**：Chrome 扩展未加载或 native host 未注册，重新 `mavis browser install`
+  - **详情页被踢回登录**：mavis browser 没有用户登录态，让用户在浏览器中登录飞书
+  - **参与人数抓成 0**：页面 SPA 还没渲染完，把脚本里 `time.sleep(5)` 调大

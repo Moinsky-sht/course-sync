@@ -1,1 +1,447 @@
-IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwojIC0qLSBjb2Rpbmc6IHV0Zi04IC0qLQoiIiIKY291cnNlX3N5bmNfbGFyay5weSDigJQg55SoIGxhcmstY2xpIOWQjOatpemjnuS5puWmmeiusOWIsCBCYXNlIOihqOagvAoK5pu/5Luj5pen54mIIHN5bmNfZmVpc2h1X21pbnV0ZXMucHnvvIjkuI3lho3kvp3otZYgUGxheXdyaWdodC9jb29raWVz77yJ44CCCuacrOiEmuacrOWPqueUqCBsYXJrLWNsaSDnmoQgT3BlbkFQSSArIGxhcmstY2xpIOS4muWKoeWwgeijheOAggoK55So5rOVOgogIHB5dGhvbjMgY291cnNlX3N5bmNfbGFyay5weSAtLWNoZWNrLWVudgogIHB5dGhvbjMgY291cnNlX3N5bmNfbGFyay5weSAtLWNvbGxlY3Qtb25seSAgICAgICAjIOaUtumbhuWAmemAiSDihpIgL3RtcC9taW51dGVzX2NhbmRpZGF0ZXMuanNvbgogIHB5dGhvbjMgY291cnNlX3N5bmNfbGFyay5weSAtLWFwcGx5LWp1ZGdtZW50cyAgICAjIOivu+WPliAvdG1wL21pbnV0ZXNfanVkZ21lbnRzLmpzb24g4oaSIOWGmSBCYXNlCgrkvp3otZY6CiAgLSBsYXJrLWNsaSDlt7Llronoo4UgKGBucG0gaSAtZyBsYXJrLWNsaWApCiAgLSDlt7LlrozmiJAgYGxhcmstY2xpIGNvbmZpZyBpbml0YCAodXNlciDouqvku70pCiAgLSB1c2VyIOi6q+S7veiDveaQnOWmmeiusCAoYHdsYnl6Y2t5LmZlaXNodS5jbmAg5Z+fKQogIC0gdXNlciDouqvku73lr7nnm67moIcgQmFzZSDooajmnInor7vlhpnmnYPpmZAKCueOr+Wig+WPmOmHj++8iOWPr+mAie+8jOimhueblum7mOiupOWAvO+8iToKICBDT1VSU0VfU1lOQ19CQVNFX1RPS0VOICDigJQg6aOe5LmmIEJhc2UgYXBwX3Rva2Vu77yI6buY6K6k6KeBIEJBU0VfVE9LRU7vvIkKICBDT1VSU0VfU1lOQ19UQUJMRV9JRCAgICDigJQgQmFzZSDooaggSUTvvIjpu5jorqTop4EgVEFCTEVfSUTvvIkKICBDT1VSU0VfU1lOQ19EQVlTX0JBQ0sgICDigJQg5pCc57Si56qX5Y+j77yI5aSp77yM6buY6K6kIDfvvIkKICBDT1VSU0VfU1lOQ19IT1NUICAgICAgICDigJQg5aaZ6K6w5Z+f5ZCN77yI6buY6K6kIHdsYnl6Y2t5LmZlaXNodS5jbu+8iQoiIiIKCmltcG9ydCBhcmdwYXJzZQppbXBvcnQganNvbgppbXBvcnQgb3MKaW1wb3J0IHJlCmltcG9ydCBzdWJwcm9jZXNzCmltcG9ydCBzeXMKZnJvbSBkYXRldGltZSBpbXBvcnQgZGF0ZXRpbWUsIHRpbWVkZWx0YSwgdGltZXpvbmUKCiMgPT09PT0g6YWN572u77yI5Y+v6YCa6L+H546v5aKD5Y+Y6YeP6KaG55uW77yJPT09PT0KQkFTRV9UT0tFTiA9IG9zLmVudmlyb24uZ2V0KCJDT1VSU0VfU1lOQ19CQVNFX1RPS0VOIiwgIlBLNUJiR1F4NGFvZXJlczlvQkNjaFdLUG5mZCIpClRBQkxFX0lEID0gb3MuZW52aXJvbi5nZXQoIkNPVVJTRV9TWU5DX1RBQkxFX0lEIiwgInRibFdUTjhqa2VFeElGYTAiKQpEQVlTX0JBQ0sgPSBpbnQob3MuZW52aXJvbi5nZXQoIkNPVVJTRV9TWU5DX0RBWVNfQkFDSyIsICI3IikpCkhPU1QgPSBvcy5lbnZpcm9uLmdldCgiQ09VUlNFX1NZTkNfSE9TVCIsICJ3bGJ5emNreS5mZWlzaHUuY24iKQoKQ0FORElEQVRFU19GSUxFID0gIi90bXAvbWludXRlc19jYW5kaWRhdGVzLmpzb24iCkpVREdNRU5UU19GSUxFID0gIi90bXAvbWludXRlc19qdWRnbWVudHMuanNvbiIKUkVQT1JUX0ZJTEUgPSAiL3RtcC9taW51dGVzX3N5bmNfcmVwb3J0Lmpzb24iCgoKZGVmIGxvZyhtc2cpOgogICAgcHJpbnQoZiJbe2RhdGV0aW1lLm5vdygpLnN0cmZ0aW1lKCclSDolTTolUycpfV0ge21zZ30iKQoKCmRlZiBsYXJrX2NsaSgqYXJncyk6CiAgICAiIiJSdW4gYSBsYXJrLWNsaSBjb21tYW5kLCByZXR1cm4gcGFyc2VkIEpTT04gZGljdCAob3IgcmF3IGRpY3Qgb24gcGFyc2UgZmFpbCkuIiIiCiAgICBjbWQgPSBbImxhcmstY2xpIl0gKyBsaXN0KGFyZ3MpCiAgICByZXN1bHQgPSBzdWJwcm9jZXNzLnJ1bihjbWQsIGNhcHR1cmVfb3V0cHV0PVRydWUsIHRleHQ9VHJ1ZSwgdGltZW91dD02MCkKICAgIG91dCA9IChyZXN1bHQuc3Rkb3V0IG9yICIiKS5zdHJpcCgpCiAgICB0cnk6CiAgICAgICAgcmV0dXJuIGpzb24ubG9hZHMob3V0KQogICAgZXhjZXB0IGpzb24uSlNPTkRlY29kZUVycm9yOgogICAgICAgIHJldHVybiB7Il9yYXdfc3Rkb3V0Ijogb3V0LCAiX3Jhd19zdGRlcnIiOiAocmVzdWx0LnN0ZGVyciBvciAiIikuc3RyaXAoKX0KCgojID09PT09PSDnjq/looPmo4Dmn6UgPT09PT09CgpkZWYgY2hlY2tfZW52KCk6CiAgICAiIiJSZXR1cm4gKGxhcmtfb2ssIHVzZXJfb2spLiIiIgogICAgdiA9IGxhcmtfY2xpKCItLXZlcnNpb24iKQogICAgbGFya19vayA9IGJvb2wodi5nZXQoIl9yYXdfc3Rkb3V0IiwgIiIpLnN0YXJ0c3dpdGgoImxhcmstY2xpIHZlcnNpb24iKSkKICAgIGlmIG5vdCBsYXJrX29rOgogICAgICAgIGxvZygi4p2MIGxhcmstY2xpIOS4jeWPr+eUqO+8jOivt+WFiDogbnBtIGkgLWcgbGFyay1jbGkiKQogICAgICAgIHJldHVybiBGYWxzZSwgRmFsc2UKCiAgICBpbmZvID0gbGFya19jbGkoImFwaSIsICJHRVQiLCAiL29wZW4tYXBpcy9hdXRoZW4vdjEvdXNlcl9pbmZvIikKICAgIHVzZXJfb2sgPSBpbmZvLmdldCgiY29kZSIpID09IDAKICAgIGlmIG5vdCB1c2VyX29rOgogICAgICAgIGxvZyhmIuKdjCBsYXJrLWNsaSDmnKrorqTor4HmiJYgdXNlciDouqvku73kuI3lj6/nlKg6IHtpbmZvfSIpCiAgICAgICAgcmV0dXJuIFRydWUsIEZhbHNlCgogICAgbmFtZSA9IGluZm8uZ2V0KCJkYXRhIiwge30pLmdldCgibmFtZSIsICI/IikKICAgIGxvZyhmIuKchSBsYXJrLWNsaSDlsLHnu6ogKHVzZXI6IHtuYW1lfSkiKQogICAgcmV0dXJuIFRydWUsIFRydWUKCgojID09PT09PSDmlLbpm4blgJnpgIkgPT09PT09CgpkZWYgZm9ybWF0X2R1cmF0aW9uKG1zX3N0cik6CiAgICAiIiJGb3JtYXQgbWlsbGlzZWNvbmQgZHVyYXRpb24gc3RyaW5nIGFzICdY5bCP5pe2WeWIhicgb3IgJ1nliIYnLiIiIgogICAgdHJ5OgogICAgICAgIHRvdGFsID0gaW50KG1zX3N0cikgLy8gMTAwMAogICAgZXhjZXB0IChWYWx1ZUVycm9yLCBUeXBlRXJyb3IpOgogICAgICAgIHJldHVybiAiIgogICAgaG91cnMgPSB0b3RhbCAvLyAzNjAwCiAgICBtaW51dGVzID0gKHRvdGFsICUgMzYwMCkgLy8gNjAKICAgIGlmIGhvdXJzID4gMCBhbmQgbWludXRlcyA+IDA6CiAgICAgICAgcmV0dXJuIGYie2hvdXJzfeWwj+aXtnttaW51dGVzfeWIhiIKICAgIGlmIGhvdXJzID4gMDoKICAgICAgICByZXR1cm4gZiJ7aG91cnN95bCP5pe2IgogICAgcmV0dXJuIGYie21pbnV0ZXN95YiGIgoKCmRlZiBzZWFyY2hfbWludXRlcyhzdGFydF9zdHIsIGVuZF9zdHIsIG93bmVyPSJtZSIsIHBhZ2Vfc2l6ZT0zMCk6CiAgICAiIiJVc2UgbGFyay1jbGkgbWludXRlcyArc2VhcmNoIHRvIGdldCBhbGwgbWludXRlcyBpbiB0aGUgZGF0ZSByYW5nZS4KICAgIAogICAgb3duZXI6ICdtZScgKGRlZmF1bHQsIG9ubHkgbWludXRlcyBJIG93bikgb3IgJ2FsbCcgKGFueSBhY2Nlc3NpYmxlKQogICAgIiIiCiAgICBpdGVtcyA9IFtdCiAgICBwYWdlX3Rva2VuID0gTm9uZQogICAgd2hpbGUgVHJ1ZToKICAgICAgICBhcmdzID0gWyJtaW51dGVzIiwgIitzZWFyY2giLCAiLS1zdGFydCIsIHN0YXJ0X3N0ciwgIi0tZW5kIiwgZW5kX3N0ciwKICAgICAgICAgICAgICAgICItLXBhZ2Utc2l6ZSIsIHN0cihwYWdlX3NpemUpXQogICAgICAgIGlmIG93bmVyID09ICJtZSI6CiAgICAgICAgICAgIGFyZ3MgKz0gWyItLW93bmVyLWlkcyIsICJtZSJdCiAgICAgICAgaWYgcGFnZV90b2tlbjoKICAgICAgICAgICAgYXJncyArPSBbIi0tcGFnZS10b2tlbiIsIHBhZ2VfdG9rZW5dCiAgICAgICAgcmVzcCA9IGxhcmtfY2xpKCphcmdzKQogICAgICAgIGlmIG5vdCByZXNwLmdldCgib2siKToKICAgICAgICAgICAgbG9nKGYiICBzZWFyY2ggZXJyb3I6IHtyZXNwLmdldCgnZXJyb3InLCByZXNwKX0iKQogICAgICAgICAgICBicmVhawogICAgICAgIGRhdGEgPSByZXNwLmdldCgiZGF0YSIsIHt9KQogICAgICAgIGl0ZW1zLmV4dGVuZChkYXRhLmdldCgiaXRlbXMiLCBbXSkpCiAgICAgICAgaWYgbm90IGRhdGEuZ2V0KCJoYXNfbW9yZSIpOgogICAgICAgICAgICBicmVhawogICAgICAgIHBhZ2VfdG9rZW4gPSBkYXRhLmdldCgicGFnZV90b2tlbiIpCiAgICAgICAgaWYgbm90IHBhZ2VfdG9rZW46CiAgICAgICAgICAgIGJyZWFrCiAgICByZXR1cm4gaXRlbXMKCgpkZWYgZ2V0X21pbnV0ZV9kZXRhaWwodG9rZW4pOgogICAgIiIiR2V0IGZ1bGwgbWludXRlIGRldGFpbCB2aWEgL29wZW4tYXBpcy9taW51dGVzL3YxL21pbnV0ZXMvOnRva2VuLiIiIgogICAgcmVzcCA9IGxhcmtfY2xpKCJhcGkiLCAiR0VUIiwgZiIvb3Blbi1hcGlzL21pbnV0ZXMvdjEvbWludXRlcy97dG9rZW59IikKICAgIGlmIHJlc3AuZ2V0KCJjb2RlIikgPT0gMDoKICAgICAgICByZXR1cm4gcmVzcC5nZXQoImRhdGEiLCB7fSkuZ2V0KCJtaW51dGUiLCB7fSkKICAgIHJldHVybiB7fQoKCmRlZiBjb2xsZWN0X2NhbmRpZGF0ZXMoZGF5c19iYWNrPURBWVNfQkFDSyk6CiAgICAiIiJTZWFyY2ggcmVjZW50IG1pbnV0ZXMg4oaSIGVucmljaCB3aXRoIGRldGFpbCDihpIgc2F2ZSB0byBDQU5ESURBVEVTX0ZJTEUuCiAgICAKICAgIFN0cmF0ZWd5OiB0cnkgb3duZXI9bWUgZmlyc3QsIGZhbGwgYmFjayB0byBwYXJ0aWNpcGFudD1tZSwgdGhlbiBubyBmaWx0ZXIuCiAgICAiIiIKICAgIGVuZCA9IGRhdGV0aW1lLm5vdyh0aW1lem9uZS51dGMpCiAgICBzdGFydCA9IGVuZCAtIHRpbWVkZWx0YShkYXlzPWRheXNfYmFjaykKICAgIHN0YXJ0X3N0ciA9IHN0YXJ0LnN0cmZ0aW1lKCIlWS0lbS0lZCIpCiAgICBlbmRfc3RyID0gZW5kLnN0cmZ0aW1lKCIlWS0lbS0lZCIpCiAgICBsb2coZiLwn5SNIOaQnOe0oiB7c3RhcnRfc3RyfSDihpIge2VuZF9zdHJ9IOeahOWmmeiusCAoc2VhcmNoIHdpbmRvdzoge2RheXNfYmFja30gZGF5cykiKQoKICAgIGl0ZW1zID0gW10KICAgIGZvciBsYWJlbCwgYXJncyBpbiBbCiAgICAgICAgKCJvd25lcj1tZSIsIFsiLS1vd25lci1pZHMiLCAibWUiXSksCiAgICAgICAgKCJwYXJ0aWNpcGFudD1tZSIsIFsiLS1wYXJ0aWNpcGFudC1pZHMiLCAibWUiXSksCiAgICBdOgogICAgICAgIGxvZyhmIiAg5bCd6K+VOiB7bGFiZWx9IikKICAgICAgICBwYWdlX3Rva2VuID0gTm9uZQogICAgICAgIGxvY2FsID0gW10KICAgICAgICB3aGlsZSBUcnVlOgogICAgICAgICAgICBjYWxsID0gWyJtaW51dGVzIiwgIitzZWFyY2giLCAiLS1zdGFydCIsIHN0YXJ0X3N0ciwgIi0tZW5kIiwgZW5kX3N0ciwKICAgICAgICAgICAgICAgICAgICAiLS1wYWdlLXNpemUiLCAiMzAiXSArIGFyZ3MKICAgICAgICAgICAgaWYgcGFnZV90b2tlbjoKICAgICAgICAgICAgICAgIGNhbGwgKz0gWyItLXBhZ2UtdG9rZW4iLCBwYWdlX3Rva2VuXQogICAgICAgICAgICByZXNwID0gbGFya19jbGkoKmNhbGwpCiAgICAgICAgICAgIGlmIG5vdCByZXNwLmdldCgib2siKToKICAgICAgICAgICAgICAgIGxvZyhmIiAgICDlpLHotKU6IHtyZXNwLmdldCgnZXJyb3InLCByZXNwKX0iKQogICAgICAgICAgICAgICAgYnJlYWsKICAgICAgICAgICAgZGF0YSA9IHJlc3AuZ2V0KCJkYXRhIiwge30pCiAgICAgICAgICAgIGxvY2FsLmV4dGVuZChkYXRhLmdldCgiaXRlbXMiLCBbXSkpCiAgICAgICAgICAgIGlmIG5vdCBkYXRhLmdldCgiaGFzX21vcmUiKToKICAgICAgICAgICAgICAgIGJyZWFrCiAgICAgICAgICAgIHBhZ2VfdG9rZW4gPSBkYXRhLmdldCgicGFnZV90b2tlbiIpCiAgICAgICAgICAgIGlmIG5vdCBwYWdlX3Rva2VuOgogICAgICAgICAgICAgICAgYnJlYWsKICAgICAgICBsb2coZiIgICAg5ou/5YiwIHtsZW4obG9jYWwpfSDmnaEiKQogICAgICAgIGlmIGxvY2FsOgogICAgICAgICAgICBpdGVtcyA9IGxvY2FsCiAgICAgICAgICAgIGJyZWFrCgogICAgaWYgbm90IGl0ZW1zOgogICAgICAgIGxvZygi4pqg77iPIG93bmVyL3BhcnRpY2lwYW50IOmDveayoeaQnOWIsCIpCgogICAgIyDljrvph40KICAgIHNlZW4gPSBzZXQoKQogICAgdW5pcXVlID0gW10KICAgIGZvciBpdCBpbiBpdGVtczoKICAgICAgICB0b2sgPSBpdC5nZXQoInRva2VuIikKICAgICAgICBpZiB0b2sgYW5kIHRvayBub3QgaW4gc2VlbjoKICAgICAgICAgICAgc2Vlbi5hZGQodG9rKQogICAgICAgICAgICB1bmlxdWUuYXBwZW5kKGl0KQogICAgbG9nKGYi8J+TpSDlhbHmib7liLAge2xlbihpdGVtcyl9IOadoe+8jOWOu+mHjeWQjiB7bGVuKHVuaXF1ZSl9IOadoSIpCgogICAgIyDmi4nor6bmg4UKICAgIGNhbmRpZGF0ZXMgPSBbXQogICAgZm9yIGl0IGluIHVuaXF1ZToKICAgICAgICB0b2sgPSBpdC5nZXQoInRva2VuIikKICAgICAgICBpZiBub3QgdG9rOgogICAgICAgICAgICBjb250aW51ZQogICAgICAgIGRldGFpbCA9IGdldF9taW51dGVfZGV0YWlsKHRvaykKICAgICAgICB0aXRsZSA9IGRldGFpbC5nZXQoInRpdGxlIikgb3IgaXQuZ2V0KCJ0aXRsZSIsICIiKQogICAgICAgIGR1cmF0aW9uX21zID0gZGV0YWlsLmdldCgiZHVyYXRpb24iKQogICAgICAgIGR1cmF0aW9uID0gZm9ybWF0X2R1cmF0aW9uKGR1cmF0aW9uX21zKSBpZiBkdXJhdGlvbl9tcyBlbHNlICIiCiAgICAgICAgb3duZXJfaWQgPSBkZXRhaWwuZ2V0KCJvd25lcl9pZCIsICIiKQogICAgICAgIGNyZWF0ZV90cyA9IGRldGFpbC5nZXQoImNyZWF0ZV90aW1lIikKICAgICAgICBkYXRlX3N0ciA9ICIiCiAgICAgICAgaWYgY3JlYXRlX3RzOgogICAgICAgICAgICB0cnk6CiAgICAgICAgICAgICAgICBkYXRlX3N0ciA9IGRhdGV0aW1lLmZyb210aW1lc3RhbXAoaW50KGNyZWF0ZV90cykgLyAxMDAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHR6PXRpbWV6b25lLnV0Yykuc3RyZnRpbWUoIiVZLSVtLSVkIikKICAgICAgICAgICAgZXhjZXB0IChWYWx1ZUVycm9yLCBUeXBlRXJyb3IpOgogICAgICAgICAgICAgICAgcGFzcwogICAgICAgIHVybCA9IGRldGFpbC5nZXQoInVybCIpIG9yIGl0LmdldCgibWV0YV9kYXRhIiwge30pLmdldCgiYXBwX2xpbmsiLCAiIikKICAgICAgICBjYW5kaWRhdGVzLmFwcGVuZCh7CiAgICAgICAgICAgICJ0b2tlbiI6IHRvaywKICAgICAgICAgICAgInJhd19uYW1lIjogdGl0bGUsCiAgICAgICAgICAgICJ1cmwiOiB1cmwsCiAgICAgICAgICAgICJkYXRlIjogZGF0ZV9zdHIsCiAgICAgICAgICAgICJkdXJhdGlvbiI6IGR1cmF0aW9uLAogICAgICAgICAgICAib3duZXIiOiBvd25lcl9pZCwKICAgICAgICAgICAgIm93bmVyX2lkIjogb3duZXJfaWQsCiAgICAgICAgICAgICJwYXJ0aWNpcGFudF9jb3VudCI6IE5vbmUsICAjIOWmmeiusCBBUEkg5LiN6L+U5Zue77yM55WZ56m6CiAgICAgICAgfSkKCiAgICB3aXRoIG9wZW4oQ0FORElEQVRFU19GSUxFLCAidyIsIGVuY29kaW5nPSJ1dGYtOCIpIGFzIGY6CiAgICAgICAganNvbi5kdW1wKHsiY2FuZGlkYXRlcyI6IGNhbmRpZGF0ZXMsCiAgICAgICAgICAgICAgICAgICAic2VhcmNoX3dpbmRvdyI6IHsic3RhcnQiOiBzdGFydF9zdHIsICJlbmQiOiBlbmRfc3RyfSwKICAgICAgICAgICAgICAgICAgICJnZW5lcmF0ZWRfYXQiOiBkYXRldGltZS5ub3codGltZXpvbmUudXRjKS5pc29mb3JtYXQoKX0sCiAgICAgICAgICAgICAgICAgIGYsIGVuc3VyZV9hc2NpaT1GYWxzZSwgaW5kZW50PTIpCiAgICBsb2coZiLinIUg5YaZ5YWlIHtDQU5ESURBVEVTX0ZJTEV9ICh7bGVuKGNhbmRpZGF0ZXMpfSDmnaHlgJnpgIkpIikKICAgIHJldHVybiBjYW5kaWRhdGVzCgoKIyA9PT09PT0g5p+l6K+iIEJhc2Ug546w5pyJID09PT09PQoKZGVmIGdldF9leGlzdGluZ19yZWNvcmRzKCk6CiAgICAiIiJSZXR1cm4gKHRva2VuX21hcCwgbmFtZV9tYXApIGZvciBkZWR1cC4iIiIKICAgIHRva2VuX21hcCA9IHt9CiAgICBuYW1lX21hcCA9IHt9CiAgICBvZmZzZXQgPSAwCiAgICBsaW1pdCA9IDEwMAogICAgd2hpbGUgVHJ1ZToKICAgICAgICByZXNwID0gbGFya19jbGkoImJhc2UiLCAiK3JlY29yZC1saXN0IiwKICAgICAgICAgICAgICAgICAgICAgICAgIi0tYmFzZS10b2tlbiIsIEJBU0VfVE9LRU4sCiAgICAgICAgICAgICAgICAgICAgICAgICItLXRhYmxlLWlkIiwgVEFCTEVfSUQsCiAgICAgICAgICAgICAgICAgICAgICAgICItLWxpbWl0Iiwgc3RyKGxpbWl0KSwKICAgICAgICAgICAgICAgICAgICAgICAgIi0tb2Zmc2V0Iiwgc3RyKG9mZnNldCkpCiAgICAgICAgaWYgbm90IHJlc3AuZ2V0KCJvayIpOgogICAgICAgICAgICBsb2coZiLinYwg6I635Y+WIEJhc2Ug6K6w5b2V5aSx6LSlOiB7cmVzcH0iKQogICAgICAgICAgICBicmVhawogICAgICAgIGRhdGEgPSByZXNwLmdldCgiZGF0YSIsIHt9KQogICAgICAgIGZpZWxkcyA9IGRhdGEuZ2V0KCJmaWVsZHMiLCBbXSkKICAgICAgICB0cnk6CiAgICAgICAgICAgIG5hbWVfaWR4ID0gZmllbGRzLmluZGV4KCLor77nqIvlkI3np7AiKQogICAgICAgICAgICBsaW5rX2lkeCA9IGZpZWxkcy5pbmRleCgi5aaZ6K6w6ZO+5o6lIikKICAgICAgICBleGNlcHQgVmFsdWVFcnJvcjoKICAgICAgICAgICAgbG9nKGYi4pqg77iPIEJhc2Ug6KGo57y65bCRICfor77nqIvlkI3np7AnIOaIliAn5aaZ6K6w6ZO+5o6lJyDlrZfmrrU6IHtmaWVsZHN9IikKICAgICAgICAgICAgYnJlYWsKICAgICAgICByb3dzID0gZGF0YS5nZXQoImRhdGEiLCBbXSkKICAgICAgICByZWNfaWRzID0gZGF0YS5nZXQoInJlY29yZF9pZF9saXN0IiwgW10pCiAgICAgICAgZm9yIGksIHJvdyBpbiBlbnVtZXJhdGUocm93cyk6CiAgICAgICAgICAgIHJlY19pZCA9IHJlY19pZHNbaV0gaWYgaSA8IGxlbihyZWNfaWRzKSBlbHNlIE5vbmUKICAgICAgICAgICAgaWYgbm90IHJlY19pZDoKICAgICAgICAgICAgICAgIGNvbnRpbnVlCiAgICAgICAgICAgIG5hbWUgPSByb3dbbmFtZV9pZHhdIGlmIG5hbWVfaWR4IDwgbGVuKHJvdykgZWxzZSBOb25lCiAgICAgICAgICAgIGxpbmtfdmFsID0gcm93W2xpbmtfaWR4XSBpZiBsaW5rX2lkeCA8IGxlbihyb3cpIGVsc2UgTm9uZQogICAgICAgICAgICBpZiBpc2luc3RhbmNlKGxpbmtfdmFsLCBsaXN0KSBhbmQgbGlua192YWw6CiAgICAgICAgICAgICAgICBmaXJzdCA9IGxpbmtfdmFsWzBdCiAgICAgICAgICAgICAgICBsaW5rID0gZmlyc3QuZ2V0KCJsaW5rIiwgIiIpIGlmIGlzaW5zdGFuY2UoZmlyc3QsIGRpY3QpIGVsc2Ugc3RyKGZpcnN0KQogICAgICAgICAgICBlbHNlOgogICAgICAgICAgICAgICAgbGluayA9IHN0cihsaW5rX3ZhbCkgaWYgbGlua192YWwgZWxzZSAiIgogICAgICAgICAgICBpZiBuYW1lOgogICAgICAgICAgICAgICAgbmFtZV9tYXBbc3RyKG5hbWUpXSA9IHJlY19pZAogICAgICAgICAgICBtID0gcmUuc2VhcmNoKHIibWludXRlcy8oW2EtejAtOV0rKSIsIGxpbmspCiAgICAgICAgICAgIGlmIG06CiAgICAgICAgICAgICAgICB0b2tlbl9tYXBbbS5ncm91cCgxKV0gPSByZWNfaWQKICAgICAgICBpZiBub3QgZGF0YS5nZXQoImhhc19tb3JlIik6CiAgICAgICAgICAgIGJyZWFrCiAgICAgICAgb2Zmc2V0ICs9IGxlbihyb3dzKQogICAgcmV0dXJuIHRva2VuX21hcCwgbmFtZV9tYXAKCgojID09PT09PSDlupTnlKgganVkZ21lbnQg4oaSIOWGmSBCYXNlID09PT09PQoKZGVmIGFwcGx5X2p1ZGdtZW50cygpOgogICAgIiIiUmVhZCAvdG1wL21pbnV0ZXNfanVkZ21lbnRzLmpzb24gYW5kIHdyaXRlL3VwZGF0ZSBCYXNlIHJlY29yZHMuIiIiCiAgICBpZiBub3Qgb3MucGF0aC5leGlzdHMoSlVER01FTlRTX0ZJTEUpOgogICAgICAgIGxvZyhmIuKdjCB7SlVER01FTlRTX0ZJTEV9IOS4jeWtmOWcqCIpCiAgICAgICAgcmV0dXJuIDEKICAgIHdpdGggb3BlbihKVURHTUVOVFNfRklMRSwgZW5jb2Rpbmc9InV0Zi04IikgYXMgZjoKICAgICAgICBwYXlsb2FkID0ganNvbi5sb2FkKGYpCiAgICBqdWRnbWVudHMgPSBwYXlsb2FkLmdldCgianVkZ21lbnRzIiwgW10pCiAgICBpZiBub3QganVkZ21lbnRzOgogICAgICAgIGxvZygi4pyFIOaXoOmcgOWkhOeQhu+8jGp1ZGdtZW50cyDkuLrnqboiKQogICAgICAgIHJldHVybiAwCgogICAgbG9nKGYi8J+TiiDojrflj5YgQmFzZSDnjrDmnInorrDlvZXkuK0uLi4iKQogICAgdG9rZW5fbWFwLCBuYW1lX21hcCA9IGdldF9leGlzdGluZ19yZWNvcmRzKCkKICAgIGxvZyhmIiAgIEJhc2Ug546w5pyJIHtsZW4odG9rZW5fbWFwKX0g5p2hIHRva2VuIOe0ouW8lSAvIHtsZW4obmFtZV9tYXApfSDmnaEgbmFtZSDntKLlvJUiKQoKICAgIHNraXBwZWQgPSBbXQogICAgd3JpdHRlbiA9IFtdCiAgICBmYWlsZWQgPSBbXQoKICAgIGZvciBqIGluIGp1ZGdtZW50czoKICAgICAgICB0b2sgPSBqLmdldCgidG9rZW4iLCAiIikKICAgICAgICBzaG91bGQgPSBqLmdldCgic2hvdWxkX3JlY29yZCIsIEZhbHNlKQogICAgICAgIGlmIG5vdCBzaG91bGQ6CiAgICAgICAgICAgIHNraXBwZWQuYXBwZW5kKHsidG9rZW4iOiB0b2ssICJuYW1lIjogai5nZXQoInJhd19uYW1lIiksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAicmVhc29uIjogai5nZXQoInJlYXNvbmluZyIsICIiKX0pCiAgICAgICAgICAgIGNvbnRpbnVlCgogICAgICAgIGNvdXJzZV9uYW1lID0gai5nZXQoImNvdXJzZV9uYW1lIikgb3Igai5nZXQoInJhd19uYW1lIiwgIiIpCiAgICAgICAgdXJsID0gai5nZXQoInVybCIsICIiKQogICAgICAgICMg5a2X5q615ZCN5Yy56YWNIEJhc2Ug5a6e6ZmFIHNjaGVtYToKICAgICAgICAjIOivvueoi+WQjeensCwg5Y+C5LiO5Lq65pWwLCDph43opoHnqIvluqYsIOS4iuivvuaXpeacnywg6K++56iL5b2i5byPLCDor77nqIvnsbvliKssCiAgICAgICAgIyDkvJrorq7ml7bplb8sIOS4u+iusuS6ui/kuLvmjIHkurosIOWmmeiusOmTvuaOpSwg6K++56iL5bm05Lu9CiAgICAgICAgZmllbGRzID0gewogICAgICAgICAgICAi6K++56iL5ZCN56ewIjogY291cnNlX25hbWUsCiAgICAgICAgICAgICLlj4LkuI7kurrmlbAiOiBqLmdldCgicGFydGljaXBhbnRfY291bnQiKSBvciBOb25lLAogICAgICAgICAgICAi6YeN6KaB56iL5bqmIjogW2pbImltcG9ydGFuY2UiXV0gaWYgai5nZXQoImltcG9ydGFuY2UiKSBlbHNlIFsi5bi46KeE6K++56iLIl0sCiAgICAgICAgICAgICLkuIror77ml6XmnJ8iOiBqLmdldCgiZGF0ZSIsICIiKSwKICAgICAgICAgICAgIuivvueoi+W9ouW8jyI6IFsi6K6y6Kej6K++Il0sCiAgICAgICAgICAgICLor77nqIvnsbvliKsiOiBbalsiY291cnNlX2NhdGVnb3J5Il1dIGlmIGouZ2V0KCJjb3Vyc2VfY2F0ZWdvcnkiKSBlbHNlIFtdLAogICAgICAgICAgICAi5Lya6K6u5pe26ZW/Ijogai5nZXQoImR1cmF0aW9uIiwgIiIpLAogICAgICAgICAgICAi5Li76K6y5Lq6L+S4u+aMgeS6uiI6IFt7ImlkIjogalsib3duZXJfaWQiXSwgIm5hbWUiOiBqLmdldCgib3duZXJfbmFtZSIsICIiKX1dCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIGouZ2V0KCJvd25lcl9pZCIpIGVsc2UgW10sCiAgICAgICAgICAgICLlppnorrDpk77mjqUiOiBmIlt7dXJsfV0oe3VybH0pIiBpZiB1cmwgZWxzZSAiIiwgICMgQmFzZSDlrZjkuLogbWFya2Rvd24g5a2X56ym5LiyCiAgICAgICAgICAgICLor77nqIvlubTku70iOiBbalsiY291cnNlX3llYXIiXV0gaWYgai5nZXQoImNvdXJzZV95ZWFyIikgZWxzZSBbXSwKICAgICAgICB9CiAgICAgICAgIyDljrvmjonnqbrlgLwKICAgICAgICBmaWVsZHMgPSB7azogdiBmb3IgaywgdiBpbiBmaWVsZHMuaXRlbXMoKSBpZiB2IG5vdCBpbiAoTm9uZSwgIiIsIFtdLCB7fSl9CgogICAgICAgIGV4aXN0aW5nX2lkID0gdG9rZW5fbWFwLmdldCh0b2spIG9yIG5hbWVfbWFwLmdldChjb3Vyc2VfbmFtZSkKICAgICAgICB0cnk6CiAgICAgICAgICAgIHVwc2VydF9hcmdzID0gWwogICAgICAgICAgICAgICAgImJhc2UiLCAiK3JlY29yZC11cHNlcnQiLAogICAgICAgICAgICAgICAgIi0tYmFzZS10b2tlbiIsIEJBU0VfVE9LRU4sCiAgICAgICAgICAgICAgICAiLS10YWJsZS1pZCIsIFRBQkxFX0lELAogICAgICAgICAgICAgICAgIi0tanNvbiIsIGpzb24uZHVtcHMoZmllbGRzLCBlbnN1cmVfYXNjaWk9RmFsc2UpLAogICAgICAgICAgICBdCiAgICAgICAgICAgIGlmIGV4aXN0aW5nX2lkOgogICAgICAgICAgICAgICAgdXBzZXJ0X2FyZ3MgKz0gWyItLXJlY29yZC1pZCIsIGV4aXN0aW5nX2lkXQogICAgICAgICAgICAgICAgYWN0aW9uID0gInVwZGF0ZWQiCiAgICAgICAgICAgIGVsc2U6CiAgICAgICAgICAgICAgICBhY3Rpb24gPSAiY3JlYXRlZCIKICAgICAgICAgICAgcmVzcCA9IGxhcmtfY2xpKCp1cHNlcnRfYXJncykKICAgICAgICAgICAgaWYgcmVzcC5nZXQoIm9rIik6CiAgICAgICAgICAgICAgICB3cml0dGVuLmFwcGVuZCh7InRva2VuIjogdG9rLCAibmFtZSI6IGNvdXJzZV9uYW1lLCAiYWN0aW9uIjogYWN0aW9uLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ5ZWFyIjogai5nZXQoImNvdXJzZV95ZWFyIiksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImNhdGVnb3J5Ijogai5nZXQoImNvdXJzZV9jYXRlZ29yeSIpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJpbXBvcnRhbmNlIjogai5nZXQoImltcG9ydGFuY2UiKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAicGFydGljaXBhbnRfY291bnQiOiBqLmdldCgicGFydGljaXBhbnRfY291bnQiKX0pCiAgICAgICAgICAgICAgICBsb2coZiIgICDinIUge2FjdGlvbn06IHtjb3Vyc2VfbmFtZX0iKQogICAgICAgICAgICBlbHNlOgogICAgICAgICAgICAgICAgZmFpbGVkLmFwcGVuZCh7InRva2VuIjogdG9rLCAibmFtZSI6IGNvdXJzZV9uYW1lLCAiZXJyb3IiOiByZXNwfSkKICAgICAgICAgICAgICAgIGxvZyhmIiAgIOKdjCDlhpnlhaXlpLHotKU6IHtjb3Vyc2VfbmFtZX0g4oaSIHtyZXNwfSIpCiAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgICAgICAgICBmYWlsZWQuYXBwZW5kKHsidG9rZW4iOiB0b2ssICJuYW1lIjogY291cnNlX25hbWUsICJlcnJvciI6IHN0cihlKX0pCiAgICAgICAgICAgIGxvZyhmIiAgIOKdjCDlvILluLg6IHtjb3Vyc2VfbmFtZX0g4oaSIHtlfSIpCgogICAgIyDmiqXlkYoKICAgIGxvZygiXG49PT0g5ZCM5q2l5oql5ZGKID09PSIpCiAgICBsb2coZiLot7Pov4c6IHtsZW4oc2tpcHBlZCl9IikKICAgIGxvZyhmIuaIkOWKnzoge2xlbih3cml0dGVuKX0iKQogICAgbG9nKGYi5aSx6LSlOiB7bGVuKGZhaWxlZCl9IikKICAgIGlmIGZhaWxlZDoKICAgICAgICBsb2coIuWksei0peaYjue7hjoiKQogICAgICAgIGZvciBmIGluIGZhaWxlZDoKICAgICAgICAgICAgbG9nKGYiICAtIHtmWyduYW1lJ119OiB7ZlsnZXJyb3InXX0iKQoKICAgIHJlcG9ydCA9IHsic2tpcHBlZCI6IHNraXBwZWQsICJ3cml0dGVuIjogd3JpdHRlbiwgImZhaWxlZCI6IGZhaWxlZCwKICAgICAgICAgICAgICAiZ2VuZXJhdGVkX2F0IjogZGF0ZXRpbWUubm93KHRpbWV6b25lLnV0YykuaXNvZm9ybWF0KCl9CiAgICB3aXRoIG9wZW4oUkVQT1JUX0ZJTEUsICJ3IiwgZW5jb2Rpbmc9InV0Zi04IikgYXMgZjoKICAgICAgICBqc29uLmR1bXAocmVwb3J0LCBmLCBlbnN1cmVfYXNjaWk9RmFsc2UsIGluZGVudD0yKQogICAgcmV0dXJuIDAgaWYgbm90IGZhaWxlZCBlbHNlIDIKCgojID09PT09PSBNYWluID09PT09PQoKZGVmIG1haW4oKToKICAgIHAgPSBhcmdwYXJzZS5Bcmd1bWVudFBhcnNlcihkZXNjcmlwdGlvbj0iY291cnNlLXN5bmMgdmlhIGxhcmstY2xpIikKICAgIHAuYWRkX2FyZ3VtZW50KCItLWNoZWNrLWVudiIsIGFjdGlvbj0ic3RvcmVfdHJ1ZSIsCiAgICAgICAgICAgICAgICAgICBoZWxwPSLmo4Dmn6UgbGFyay1jbGkgKyDorqTor4HnirbmgIEiKQogICAgcC5hZGRfYXJndW1lbnQoIi0tY29sbGVjdC1vbmx5IiwgYWN0aW9uPSJzdG9yZV90cnVlIiwKICAgICAgICAgICAgICAgICAgIGhlbHA9IuaUtumbhuacgOi/keWmmeiusOWAmemAiSDihpIgL3RtcC9taW51dGVzX2NhbmRpZGF0ZXMuanNvbiIpCiAgICBwLmFkZF9hcmd1bWVudCgiLS1hcHBseS1qdWRnbWVudHMiLCBhY3Rpb249InN0b3JlX3RydWUiLAogICAgICAgICAgICAgICAgICAgaGVscD0i5bqU55SoIC90bXAvbWludXRlc19qdWRnbWVudHMuanNvbiDlhpkgQmFzZSIpCiAgICBhcmdzID0gcC5wYXJzZV9hcmdzKCkKCiAgICBpZiBhcmdzLmNoZWNrX2VudjoKICAgICAgICBsYXJrX29rLCB1c2VyX29rID0gY2hlY2tfZW52KCkKICAgICAgICBzeXMuZXhpdCgwIGlmIChsYXJrX29rIGFuZCB1c2VyX29rKSBlbHNlIDEpCiAgICBpZiBhcmdzLmNvbGxlY3Rfb25seToKICAgICAgICBsYXJrX29rLCB1c2VyX29rID0gY2hlY2tfZW52KCkKICAgICAgICBpZiBub3QgKGxhcmtfb2sgYW5kIHVzZXJfb2spOgogICAgICAgICAgICBzeXMuZXhpdCgxKQogICAgICAgIGNvbGxlY3RfY2FuZGlkYXRlcygpCiAgICAgICAgc3lzLmV4aXQoMCkKICAgIGlmIGFyZ3MuYXBwbHlfanVkZ21lbnRzOgogICAgICAgIHN5cy5leGl0KGFwcGx5X2p1ZGdtZW50cygpKQogICAgcC5wcmludF9oZWxwKCkKICAgIHN5cy5leGl0KDIpCgoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIG1haW4oKQo=
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+course_sync_lark.py — 用 lark-cli 同步飞书妙记到 Base 表格
+
+替代旧版 sync_feishu_minutes.py（不再依赖 Playwright/cookies）。
+本脚本只用 lark-cli 的 OpenAPI + lark-cli 业务封装。
+
+用法:
+  python3 course_sync_lark.py --check-env
+  python3 course_sync_lark.py --collect-only       # 收集候选 → /tmp/minutes_candidates.json
+  python3 course_sync_lark.py --apply-judgments    # 读取 /tmp/minutes_judgments.json → 写 Base
+
+依赖:
+  - lark-cli 已安装 (`npm i -g lark-cli`)
+  - 已完成 `lark-cli config init` (user 身份)
+  - user 身份能搜妙记 (`wlbyzcky.feishu.cn` 域)
+  - user 身份对目标 Base 表有读写权限
+
+环境变量（可选，覆盖默认值）:
+  COURSE_SYNC_BASE_TOKEN  — 飞书 Base app_token（默认见 BASE_TOKEN）
+  COURSE_SYNC_TABLE_ID    — Base 表 ID（默认见 TABLE_ID）
+  COURSE_SYNC_DAYS_BACK   — 搜索窗口（天，默认 7）
+  COURSE_SYNC_HOST        — 妙记域名（默认 wlbyzcky.feishu.cn）
+"""
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from datetime import datetime, timedelta, timezone
+
+# ===== 配置（可通过环境变量覆盖）=====
+BASE_TOKEN = os.environ.get("COURSE_SYNC_BASE_TOKEN", "PK5BbGQx4aoeres9oBCchWKPnfd")
+TABLE_ID = os.environ.get("COURSE_SYNC_TABLE_ID", "tblWTN8jkeExIFa0")
+DAYS_BACK = int(os.environ.get("COURSE_SYNC_DAYS_BACK", "7"))
+HOST = os.environ.get("COURSE_SYNC_HOST", "wlbyzcky.feishu.cn")
+
+CANDIDATES_FILE = "/tmp/minutes_candidates.json"
+JUDGMENTS_FILE = "/tmp/minutes_judgments.json"
+REPORT_FILE = "/tmp/minutes_sync_report.json"
+
+
+def log(msg):
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
+
+
+def lark_cli(*args):
+    """Run a lark-cli command, return parsed JSON dict (or raw dict on parse fail)."""
+    cmd = ["lark-cli"] + list(args)
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+    out = (result.stdout or "").strip()
+    try:
+        return json.loads(out)
+    except json.JSONDecodeError:
+        return {"_raw_stdout": out, "_raw_stderr": (result.stderr or "").strip()}
+
+
+# ====== 环境检查 ======
+
+def check_env():
+    """Return (lark_ok, user_ok)."""
+    v = lark_cli("--version")
+    lark_ok = bool(v.get("_raw_stdout", "").startswith("lark-cli version"))
+    if not lark_ok:
+        log("❌ lark-cli 不可用，请先: npm i -g lark-cli")
+        return False, False
+
+    info = lark_cli("api", "GET", "/open-apis/authen/v1/user_info")
+    user_ok = info.get("code") == 0
+    if not user_ok:
+        log(f"❌ lark-cli 未认证或 user 身份不可用: {info}")
+        return True, False
+
+    name = info.get("data", {}).get("name", "?")
+    log(f"✅ lark-cli 就绪 (user: {name})")
+    return True, True
+
+
+# ====== 收集候选 ======
+
+def format_duration(ms_str):
+    """Format millisecond duration string as 'X小时Y分' or 'Y分'."""
+    try:
+        total = int(ms_str) // 1000
+    except (ValueError, TypeError):
+        return ""
+    hours = total // 3600
+    minutes = (total % 3600) // 60
+    if hours > 0 and minutes > 0:
+        return f"{hours}小时{minutes}分"
+    if hours > 0:
+        return f"{hours}小时"
+    return f"{minutes}分"
+
+
+def lookup_open_id(display_name, cache=None):
+    """Resolve a display name to open_id via contact +search-user.
+
+    Returns (open_id, localized_name) or (None, display_name) on miss.
+    Uses optional cache dict to avoid repeated lookups in a single run.
+    """
+    if not display_name:
+        return None, display_name
+    if cache is not None and display_name in cache:
+        return cache[display_name]
+    try:
+        resp = lark_cli("contact", "+search-user", "--query", display_name)
+        users = (resp.get("data") or {}).get("users") or []
+        if users:
+            # 取第一个（最高相关度）
+            u = users[0]
+            oid = u.get("open_id")
+            lname = u.get("localized_name", display_name)
+            if cache is not None:
+                cache[display_name] = (oid, lname)
+            return oid, lname
+    except Exception as e:
+        log(f"  contact lookup failed for {display_name}: {e}")
+    if cache is not None:
+        cache[display_name] = (None, display_name)
+    return None, display_name
+
+
+def search_minutes(start_str, end_str, mode="owner_me", page_size=30):
+    """Use lark-cli minutes +search to get minutes in the date range.
+
+    mode:
+      - "owner_me"        — only minutes I own
+      - "participant_me"  — only minutes where I'm a participant
+      - "all"             — no owner/participant filter (returns everything
+                            I have visibility on, including shared-by-others)
+    """
+    items = []
+    page_token = None
+    while True:
+        args = ["minutes", "+search", "--start", start_str, "--end", end_str,
+                "--page-size", str(page_size)]
+        if mode == "owner_me":
+            args += ["--owner-ids", "me"]
+        elif mode == "participant_me":
+            args += ["--participant-ids", "me"]
+        # "all" 不加 filter
+        if page_token:
+            args += ["--page-token", page_token]
+        resp = lark_cli(*args)
+        if not resp.get("ok"):
+            log(f"  search error ({mode}): {resp.get('error', resp)}")
+            break
+        data = resp.get("data", {})
+        items.extend(data.get("items", []))
+        if not data.get("has_more"):
+            break
+        page_token = data.get("page_token")
+        if not page_token:
+            break
+    return items
+
+
+def get_minute_detail(token):
+    """Get full minute detail via /open-apis/minutes/v1/minutes/:token."""
+    resp = lark_cli("api", "GET", f"/open-apis/minutes/v1/minutes/{token}")
+    if resp.get("code") == 0:
+        return resp.get("data", {}).get("minute", {})
+    return {}
+
+
+def collect_candidates(days_back=DAYS_BACK):
+    """Search recent minutes → enrich with detail → save to CANDIDATES_FILE.
+
+    3 路并行搜索取并集（去重）:
+      1. owner=me              — 我创建的
+      2. participant=me        — 我参与的
+      3. all (无 filter)       — 别人分享/共享给我的（owner 不是我，participant 可能也不是我）
+    """
+    end = datetime.now(timezone.utc)
+    start = end - timedelta(days=days_back)
+    start_str = start.strftime("%Y-%m-%d")
+    end_str = end.strftime("%Y-%m-%d")
+    log(f"🔍 搜索 {start_str} → {end_str} 的妙记 (search window: {days_back} days)")
+
+    # 3 路搜索，结果去重
+    seen_tokens = set()
+    seen_signatures = set()  # (date, title) 用于兜底（极少数 token 缺失的情况）
+    items = []
+
+    for mode, label in [
+        ("owner_me", "owner=me"),
+        ("participant_me", "participant=me"),
+        ("all", "all (含共享)"),
+    ]:
+        log(f"  搜: {label}")
+        local = search_minutes(start_str, end_str, mode=mode)
+        added = 0
+        for it in local:
+            tok = it.get("token")
+            if not tok:
+                # 极少数情况 token 缺失，用 (date, title) 兜底
+                sig = (it.get("display_info", ""), it.get("meta_data", {}).get("description", ""))
+                if sig in seen_signatures:
+                    continue
+                seen_signatures.add(sig)
+                items.append(it)
+                added += 1
+                continue
+            if tok in seen_tokens:
+                continue
+            seen_tokens.add(tok)
+            items.append(it)
+            added += 1
+        log(f"    拿到 {len(local)} 条，新增 {added} 条")
+
+    log(f"📥 共找到 {len(items)} 条候选 (3 路并集去重)")
+
+    # 拉详情
+    candidates = []
+    contact_cache = {}  # 显示名 → (open_id, localized_name) 缓存
+    for it in items:
+        tok = it.get("token")
+        if not tok:
+            continue
+        detail = get_minute_detail(tok)
+        title = detail.get("title") or it.get("title", "")
+        duration_ms = detail.get("duration")
+        duration = format_duration(duration_ms) if duration_ms else ""
+        owner_id = detail.get("owner_id", "")
+        create_ts = detail.get("create_time")
+        date_str = ""
+        if create_ts:
+            try:
+                date_str = datetime.fromtimestamp(int(create_ts) / 1000,
+                                                  tz=timezone.utc).strftime("%Y-%m-%d")
+            except (ValueError, TypeError):
+                pass
+        url = detail.get("url") or it.get("meta_data", {}).get("app_link", "")
+
+        # owner_id 可能空（owner 是别人，detail API 不返回完整 owner）
+        # 这时从 display_info 解析 "所有者: 天天" → 显示名
+        owner_display_name = ""
+        if not owner_id:
+            desc = it.get("description", "")
+            m = re.search(r"所有者:\s*(\S+)", desc)
+            if m:
+                owner_display_name = m.group(1)
+                # 用 contact 查 open_id
+                oid, lname = lookup_open_id(owner_display_name, cache=contact_cache)
+                owner_id = oid or ""
+                if lname and lname != owner_display_name:
+                    owner_display_name = lname  # 用 contact 返回的规范名
+
+        candidates.append({
+            "token": tok,
+            "raw_name": title,
+            "url": url,
+            "date": date_str,
+            "duration": duration,
+            "owner": owner_id or owner_display_name,
+            "owner_id": owner_id,
+            "owner_display_name": owner_display_name,
+            "participant_count": None,
+        })
+
+    with open(CANDIDATES_FILE, "w", encoding="utf-8") as f:
+        json.dump({"candidates": candidates,
+                   "search_window": {"start": start_str, "end": end_str},
+                   "generated_at": datetime.now(timezone.utc).isoformat()},
+                  f, ensure_ascii=False, indent=2)
+    log(f"✅ 写入 {CANDIDATES_FILE} ({len(candidates)} 条候选)")
+    return candidates
+
+
+# ====== 查询 Base 现有 ======
+
+def get_existing_records():
+    """Return (token_map, name_map) for dedup."""
+    token_map = {}
+    name_map = {}
+    offset = 0
+    limit = 100
+    while True:
+        resp = lark_cli("base", "+record-list",
+                        "--base-token", BASE_TOKEN,
+                        "--table-id", TABLE_ID,
+                        "--limit", str(limit),
+                        "--offset", str(offset))
+        if not resp.get("ok"):
+            log(f"❌ 获取 Base 记录失败: {resp}")
+            break
+        data = resp.get("data", {})
+        fields = data.get("fields", [])
+        try:
+            name_idx = fields.index("课程名称")
+            link_idx = fields.index("妙记链接")
+        except ValueError:
+            log(f"⚠️ Base 表缺少 '课程名称' 或 '妙记链接' 字段: {fields}")
+            break
+        rows = data.get("data", [])
+        rec_ids = data.get("record_id_list", [])
+        for i, row in enumerate(rows):
+            rec_id = rec_ids[i] if i < len(rec_ids) else None
+            if not rec_id:
+                continue
+            name = row[name_idx] if name_idx < len(row) else None
+            link_val = row[link_idx] if link_idx < len(row) else None
+            if isinstance(link_val, list) and link_val:
+                first = link_val[0]
+                link = first.get("link", "") if isinstance(first, dict) else str(first)
+            else:
+                link = str(link_val) if link_val else ""
+            if name:
+                name_map[str(name)] = rec_id
+            m = re.search(r"minutes/([a-z0-9]+)", link)
+            if m:
+                token_map[m.group(1)] = rec_id
+        if not data.get("has_more"):
+            break
+        offset += len(rows)
+    return token_map, name_map
+
+
+# ====== 应用 judgment → 写 Base ======
+
+def apply_judgments():
+    """Read /tmp/minutes_judgments.json and write/update Base records."""
+    if not os.path.exists(JUDGMENTS_FILE):
+        log(f"❌ {JUDGMENTS_FILE} 不存在")
+        return 1
+    with open(JUDGMENTS_FILE, encoding="utf-8") as f:
+        payload = json.load(f)
+    judgments = payload.get("judgments", [])
+    if not judgments:
+        log("✅ 无需处理，judgments 为空")
+        return 0
+
+    log(f"📊 获取 Base 现有记录中...")
+    token_map, name_map = get_existing_records()
+    log(f"   Base 现有 {len(token_map)} 条 token 索引 / {len(name_map)} 条 name 索引")
+
+    skipped = []
+    written = []
+    failed = []
+
+    for j in judgments:
+        tok = j.get("token", "")
+        should = j.get("should_record", False)
+        if not should:
+            skipped.append({"token": tok, "name": j.get("raw_name"),
+                            "reason": j.get("reasoning", "")})
+            continue
+
+        course_name = j.get("course_name") or j.get("raw_name", "")
+        url = j.get("url", "")
+        # 字段名匹配 Base 实际 schema:
+        # 课程名称, 参与人数, 重要程度, 上课日期, 课程形式, 课程类别,
+        # 会议时长, 主讲人/主持人, 妙记链接, 课程年份
+        fields = {
+            "课程名称": course_name,
+            "参与人数": j.get("participant_count") or None,
+            "重要程度": [j["importance"]] if j.get("importance") else ["常规课程"],
+            "上课日期": j.get("date", ""),
+            "课程形式": ["讲解课"],
+            "课程类别": [j["course_category"]] if j.get("course_category") else [],
+            "会议时长": j.get("duration", ""),
+            "主讲人/主持人": [{"id": j["owner_id"], "name": j.get("owner_name", "")}]
+                              if j.get("owner_id") else [],
+            "妙记链接": f"[{url}]({url})" if url else "",  # Base 存为 markdown 字符串
+            "课程年份": [j["course_year"]] if j.get("course_year") else [],
+        }
+        # 去掉空值
+        fields = {k: v for k, v in fields.items() if v not in (None, "", [], {})}
+
+        existing_id = token_map.get(tok) or name_map.get(course_name)
+        try:
+            upsert_args = [
+                "base", "+record-upsert",
+                "--base-token", BASE_TOKEN,
+                "--table-id", TABLE_ID,
+                "--json", json.dumps(fields, ensure_ascii=False),
+            ]
+            if existing_id:
+                upsert_args += ["--record-id", existing_id]
+                action = "updated"
+            else:
+                action = "created"
+            resp = lark_cli(*upsert_args)
+            if resp.get("ok"):
+                written.append({"token": tok, "name": course_name, "action": action,
+                                "year": j.get("course_year"),
+                                "category": j.get("course_category"),
+                                "importance": j.get("importance"),
+                                "participant_count": j.get("participant_count")})
+                log(f"   ✅ {action}: {course_name}")
+            else:
+                failed.append({"token": tok, "name": course_name, "error": resp})
+                log(f"   ❌ 写入失败: {course_name} → {resp}")
+        except Exception as e:
+            failed.append({"token": tok, "name": course_name, "error": str(e)})
+            log(f"   ❌ 异常: {course_name} → {e}")
+
+    # 报告
+    log("\n=== 同步报告 ===")
+    log(f"跳过: {len(skipped)}")
+    log(f"成功: {len(written)}")
+    log(f"失败: {len(failed)}")
+    if failed:
+        log("失败明细:")
+        for f in failed:
+            log(f"  - {f['name']}: {f['error']}")
+
+    report = {"skipped": skipped, "written": written, "failed": failed,
+              "generated_at": datetime.now(timezone.utc).isoformat()}
+    with open(REPORT_FILE, "w", encoding="utf-8") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
+    return 0 if not failed else 2
+
+
+# ====== Main ======
+
+def main():
+    p = argparse.ArgumentParser(description="course-sync via lark-cli")
+    p.add_argument("--check-env", action="store_true",
+                   help="检查 lark-cli + 认证状态")
+    p.add_argument("--collect-only", action="store_true",
+                   help="收集最近妙记候选 → /tmp/minutes_candidates.json")
+    p.add_argument("--apply-judgments", action="store_true",
+                   help="应用 /tmp/minutes_judgments.json 写 Base")
+    args = p.parse_args()
+
+    if args.check_env:
+        lark_ok, user_ok = check_env()
+        sys.exit(0 if (lark_ok and user_ok) else 1)
+    if args.collect_only:
+        lark_ok, user_ok = check_env()
+        if not (lark_ok and user_ok):
+            sys.exit(1)
+        collect_candidates()
+        sys.exit(0)
+    if args.apply_judgments:
+        sys.exit(apply_judgments())
+    p.print_help()
+    sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()

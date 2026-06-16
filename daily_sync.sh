@@ -5,7 +5,9 @@
 #   ./daily_sync.sh                  # 跑完整流程（collect → judge → write → export）
 #   ./daily_sync.sh --collect-only  # 只收集候选（不写 Base、不导出）
 #   ./daily_sync.sh --export-only   # 只从 Base 导出给网站
+#   ./daily_sync.sh --check-env     # 检查 lark-cli、Base、网站 API 配置
 #   ./daily_sync.sh --days 7        # 自定义搜索窗口（默认 7 天）
+#   ./daily_sync.sh --require-site-sync  # 导出时要求必须成功推送网站 API
 #   ./daily_sync.sh --force-judgments  # 跳过 judgments 校验强制 apply（不推荐）
 #
 # 适合 cron:
@@ -27,20 +29,42 @@ cd "$SCRIPT_DIR"
 DAYS=7
 MODE="full"
 FORCE_JUDGMENTS=0
-for arg in "$@"; do
-  case $arg in
+REQUIRE_SITE_SYNC=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --check-env)        MODE="check" ;;
     --collect-only)     MODE="collect" ;;
     --export-only)      MODE="export"  ;;
-    --days=*)           DAYS="${arg#*=}" ;;
+    --days=*)           DAYS="${1#*=}" ;;
     --days)             shift; DAYS="${1:-7}" ;;
+    --require-site-sync) REQUIRE_SITE_SYNC=1 ;;
     --force-judgments)  FORCE_JUDGMENTS=1 ;;
-    *)                  echo "Unknown arg: $arg"; exit 2 ;;
+    *)                  echo "Unknown arg: $1"; exit 2 ;;
   esac
+  shift
 done
 
 export COURSE_SYNC_DAYS_BACK="$DAYS"
 
 log() { printf '[%s] %s\n' "$(date +%H:%M:%S)" "$*"; }
+
+check_environment() {
+  log "=== 环境检查 ==="
+  if ! command -v "${LARK_CLI_BIN:-lark-cli}" >/dev/null 2>&1; then
+    log "❌ 未找到 lark-cli，请先安装: npm i -g lark-cli"
+    return 1
+  fi
+
+  python3 scripts/course_sync_lark.py --check-env
+
+  log "Base: ${COURSE_SYNC_BASE_TOKEN:-PK5BbGQx4aoeres9oBCchWKPnfd}/${COURSE_SYNC_TABLE_ID:-tblWTN8jkeExIFa0}"
+  if [[ -n "${COURSE_SYNC_SITE_SYNC_URL:-}" && -n "${COURSE_SYNC_SITE_SYNC_TOKEN:-}" ]]; then
+    log "网站同步 API: 已配置"
+  else
+    log "网站同步 API: 未配置（只会本地导出，不会推送网站）"
+    log "需要每日更新网站时请配置 COURSE_SYNC_SITE_SYNC_URL 和 COURSE_SYNC_SITE_SYNC_TOKEN"
+  fi
+}
 
 # ====== 工具函数：judgments 校验 ======
 #
@@ -109,6 +133,12 @@ PYEOF
 
 # ====== 主流程 ======
 
+if [[ "$MODE" == "check" ]]; then
+  check_environment
+  log "=== 完成 ==="
+  exit 0
+fi
+
 if [[ "$MODE" == "full" || "$MODE" == "collect" ]]; then
   log "=== Step 1: 收集候选 ==="
   python3 scripts/course_sync_lark.py --collect-only
@@ -158,7 +188,11 @@ fi
 
 if [[ "$MODE" == "full" || "$MODE" == "export" ]]; then
   log "=== Step 4: 导出给网站 ==="
-  python3 scripts/site_export.py
+  export_args=()
+  if [[ "$REQUIRE_SITE_SYNC" == "1" ]]; then
+    export_args+=(--require-site-sync)
+  fi
+  python3 scripts/site_export.py "${export_args[@]}"
 fi
 
 log "=== 完成 ==="

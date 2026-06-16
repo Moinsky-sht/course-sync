@@ -41,10 +41,21 @@ HOST = os.environ.get("COURSE_SYNC_HOST", "wlbyzcky.feishu.cn")
 CANDIDATES_FILE = "/tmp/minutes_candidates.json"
 JUDGMENTS_FILE = "/tmp/minutes_judgments.json"
 REPORT_FILE = "/tmp/minutes_sync_report.json"
+HOST_ALIAS_MAP = {
+    "luu": "霍雨露",
+    "luu🦌": "霍雨露",
+    "luu鹿": "霍雨露",
+}
 
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
+
+
+def normalize_host_name(name):
+    text = re.sub(r"\s+", " ", str(name or "")).strip()
+    key = text.lower().replace(" ", "")
+    return HOST_ALIAS_MAP.get(key, text)
 
 
 def lark_cli(*args):
@@ -343,6 +354,7 @@ def apply_judgments():
     skipped = []
     written = []
     failed = []
+    contact_cache = {}
 
     for j in judgments:
         tok = j.get("token", "")
@@ -354,6 +366,15 @@ def apply_judgments():
 
         course_name = j.get("course_name") or j.get("raw_name", "")
         url = j.get("url", "")
+        host_name = normalize_host_name(j.get("host_name") or j.get("speaker_name") or j.get("owner_name", ""))
+        host_id = j.get("host_id") or j.get("speaker_id") or ""
+        if host_name and not host_id:
+            host_id, resolved_name = lookup_open_id(host_name, cache=contact_cache)
+            host_name = resolved_name or host_name
+        if not host_id:
+            host_id = j.get("owner_id", "")
+        if not host_name:
+            host_name = j.get("owner_name", "")
         # 字段名匹配 Base 实际 schema:
         # 课程名称, 参与人数, 重要程度, 上课日期, 课程形式, 课程类别,
         # 会议时长, 主讲人/主持人, 妙记链接, 课程年份
@@ -365,8 +386,8 @@ def apply_judgments():
             "课程形式": ["讲解课"],
             "课程类别": [j["course_category"]] if j.get("course_category") else [],
             "会议时长": j.get("duration", ""),
-            "主讲人/主持人": [{"id": j["owner_id"], "name": j.get("owner_name", "")}]
-                              if j.get("owner_id") else [],
+            "主讲显示名": host_name,
+            "主讲人/主持人": [{"id": host_id, "name": host_name}] if host_id else [],
             "妙记链接": f"[{url}]({url})" if url else "",  # Base 存为 markdown 字符串
             "课程年份": [j["course_year"]] if j.get("course_year") else [],
         }

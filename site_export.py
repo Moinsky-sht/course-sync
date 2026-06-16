@@ -13,10 +13,13 @@ site_export.py — 从飞书 Base 导出课程数据，给个人网站消费
   COURSE_SYNC_BASE_TOKEN  — 飞书 Base app_token
   COURSE_SYNC_TABLE_ID    — Base 表 ID
   COURSE_SYNC_OUTPUT_DIR  — 输出目录（默认 /tmp/site_export）
+  COURSE_SYNC_SITE_SYNC_URL — 网站课程同步接口
+  COURSE_SYNC_SITE_SYNC_TOKEN — 网站同步接口 Token
 
 用法:
   python3 site_export.py
   python3 site_export.py --days 30 --output ./public/courses
+  python3 site_export.py --require-site-sync
 
 如果你的网站是 Hugo/Jekyll/Next.js 等静态站，可以直接拿 courses.json 喂进去。
 """
@@ -27,6 +30,8 @@ import os
 import re
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
@@ -35,6 +40,42 @@ BASE_TOKEN = os.environ.get("COURSE_SYNC_BASE_TOKEN", "PK5BbGQx4aoeres9oBCchWKPn
 TABLE_ID = os.environ.get("COURSE_SYNC_TABLE_ID", "tblWTN8jkeExIFa0")
 OUTPUT_DIR = os.environ.get("COURSE_SYNC_OUTPUT_DIR", "/tmp/site_export")
 LARK_CLI_BIN = os.environ.get("LARK_CLI_BIN", "lark-cli")
+SITE_SYNC_URL = os.environ.get("COURSE_SYNC_SITE_SYNC_URL") or os.environ.get("COURSE_SYNC_SITE_PUSH_URL", "")
+SITE_SYNC_TOKEN = os.environ.get("COURSE_SYNC_SITE_SYNC_TOKEN") or os.environ.get("COURSE_SYNC_SITE_PUSH_TOKEN", "")
+
+GENERIC_HOSTS = {"", "天天", "天"}
+HOST_ALIAS_MAP = {
+    "luu": "霍雨露",
+    "luu🦌": "霍雨露",
+    "luu鹿": "霍雨露",
+}
+DEFAULT_EXCLUDED_TOKENS = "obcn3t4uyv3egq867ympj886"
+EXCLUDED_TOKENS = {
+    token.strip()
+    for token in os.environ.get("COURSE_SYNC_EXCLUDED_TOKENS", DEFAULT_EXCLUDED_TOKENS).split(",")
+    if token.strip()
+}
+
+
+def normalized_course_host(name, category, year, host):
+    """Apply only stable host fixes during site export.
+
+    Host teachers vary by cohort and subject. Do not use broad year/category
+    mappings here; those must come from transcript/VC evidence in the sync step.
+    """
+    name = str(name or "")
+    category = str(category or "")
+    year = str(year or "")
+    host = str(host or "").strip()
+    host = HOST_ALIAS_MAP.get(host.lower().replace(" ", ""), host)
+
+    if host and host not in GENERIC_HOSTS:
+        return host
+
+    if category == "世界文明史" or "文明史" in name:
+        return "泠泠七"
+
+    return host
 
 
 def lark_cli(*args):
@@ -94,6 +135,8 @@ def normalize_course(rec):
     # Extract token from URL
     token_m = re.search(r"minutes/([a-z0-9]+)", url)
     token = token_m.group(1) if token_m else ""
+    if token in EXCLUDED_TOKENS:
+        return None
 
     # 课程年份 list → string
     year = ""
@@ -117,14 +160,17 @@ def normalize_course(rec):
     if isinstance(f.get("课程类别"), list) and f["课程类别"]:
         category = f["课程类别"][0]
 
-    # 主讲人
+    # 主讲人：优先使用文本显示名，人员字段保留给 Base 协作。
     host = ""
-    if isinstance(f.get("主讲人/主持人"), list) and f["主讲人/主持人"]:
+    if isinstance(f.get("主讲显示名"), str) and f.get("主讲显示名").strip():
+        host = f.get("主讲显示名").strip()
+    elif isinstance(f.get("主讲人/主持人"), list) and f["主讲人/主持人"]:
         first = f["主讲人/主持人"][0]
         if isinstance(first, dict):
             host = first.get("name", "")
     elif isinstance(f.get("主讲人/主持人"), str):
         host = f["主讲人/主持人"]
+    host = normalized_course_host(name, category, year, host)
 
     return {
         "id": rec["rec_id"],
@@ -176,12 +222,62 @@ def render_grouped_index(courses):
     return out
 
 
+def push_courses_to_site(full_path, require=False):
+    """Push courses.json to the website integration API when configured."""
+    if not SITE_SYNC_URL or not SITE_SYNC_TOKEN:
+        if require:
+            raise RuntimeError(
+                "COURSE_SYNC_SITE_SYNC_URL 和 COURSE_SYNC_SITE_SYNC_TOKEN 必须同时配置"
+            )
+        print("ℹ️ Website sync skipped: COURSE_SYNC_SITE_SYNC_URL/TOKEN not configured")
+        return
+
+    try:
+        with open(full_path, "rb") as f:
+            body = f.read()
+        req = urllib.request.Request(
+            SITE_SYNC_URL,
+            data=body,
+            headers={
+                "Authorization": f"Bearer {SITE_SYNC_TOKEN}",
+                "Content-Type": "application/json; charset=utf-8",
+                "Accept": "application/json",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            raw = resp.read().decode("utf-8", errors="replace")
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            data = {"raw": raw}
+        summary = data.get("data") if isinstance(data, dict) else {}
+        print(
+            "✅ Website sync pushed"
+            f" created={summary.get('created', 0)}"
+            f" updated={summary.get('updated', 0)}"
+            f" skipped={summary.get('skipped', 0)}"
+            f" manualPreserved={summary.get('manualPreserved', 0)}"
+        )
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", errors="replace")
+        print(f"⚠️ Website sync failed: HTTP {e.code} {detail[:500]}", file=sys.stderr)
+        if require:
+            raise
+    except Exception as e:
+        print(f"⚠️ Website sync failed: {e}", file=sys.stderr)
+        if require:
+            raise
+
+
 def main():
     p = argparse.ArgumentParser(description="Export Base → JSON / Markdown for site")
     p.add_argument("--days", type=int, default=None,
                    help="Only include courses from last N days (default: all)")
     p.add_argument("--output", default=OUTPUT_DIR,
                    help=f"Output dir (default {OUTPUT_DIR})")
+    p.add_argument("--require-site-sync", action="store_true",
+                   help="Fail when website API push is not configured or fails")
     args = p.parse_args()
 
     os.makedirs(args.output, exist_ok=True)
@@ -263,6 +359,8 @@ def main():
     with open(stats_path, "w", encoding="utf-8") as f:
         json.dump(stats, f, ensure_ascii=False, indent=2)
     print(f"✅ {stats_path}")
+
+    push_courses_to_site(full_path, require=args.require_site_sync)
 
     print(f"\n🎉 All exports in: {args.output}")
 

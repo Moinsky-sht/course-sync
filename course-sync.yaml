@@ -21,7 +21,7 @@ prompt: |
   ## 步骤 0：环境检查
   运行：
   ```bash
-  python3 course_sync_lark.py --check-env
+  ./daily_sync.sh --check-env
   ```
   输出显示 `lark-cli 就绪 (user: ...)` 才继续。如果失败请按脚本提示处理（`npm i -g lark-cli`、`lark-cli config init` 等）。
 
@@ -42,7 +42,20 @@ prompt: |
   ```bash
   python3 fetch_speakers_via_browser.py --from-candidates /tmp/minutes_candidates.json
   ```
-  脚本不会打开浏览器。它会用 `lark-cli vc +search` 在候选日期附近搜索会议，用 `lark-cli vc +recording` 校验会议录制对应的 minute token，再用 `lark-cli vc meeting get --with-participants` 读取 VC 会议参会统计。
+  脚本不会打开浏览器。它会用多策略 VC resolver 获取参会统计：
+  1. 先尝试 `lark-cli vc +notes --minute-tokens` 直接从妙记 token 找 meeting_id；
+  2. 用 `minutes minutes get` 补齐 `note_id`、owner、创建时间、时长；
+  3. 按标题、owner 作为组织者、owner 作为参与者、当前用户参与、宽日期窗口分页搜索 VC 会议；
+  4. 对候选 meeting 批量执行 `vc +recording`，优先要求 recording 的 minute token 精确匹配；
+  5. 如果录制关系不可见，再要求 `meeting.note_id == minute.note_id` 精确匹配；
+  6. 只有极高置信元数据匹配才输出 `probable_matched`，否则保持 `participant_count: null`。
+
+  `vc +notes --minute-tokens` 需要用户授权 `minutes:minutes.artifacts:read`。如果缺失，脚本会记录 missing scope，并降级到搜索 / recording / note_id 路径。
+
+  权限处理是强制流程：如果任何 `lark-cli` 命令返回 `missing_scope`，不要把它静默当成最终匹配失败；必须按 `lark-shared` 的 split-flow 发起授权申请：
+  `lark-cli auth login --scope "<missing_scope>" --no-wait --json` → `lark-cli auth qrcode <verification_url> --output <png>` → 展示 URL 和二维码并等待用户授权 → 用户确认后执行 `lark-cli auth login --device-code <device_code>` → 重新运行参会统计脚本。
+
+  只有在权限已补齐、官方 VC resolver 仍无法返回 `matched` 或 `probable_matched` 后，才允许进入妙记文本 / 逐字稿做最后人工判别。
 
   输出 `/tmp/speaker_counts.json`。
 
@@ -74,6 +87,7 @@ prompt: |
   - `owner`: open_id
   - `owner_id`: open_id
   - `owner_name`: 显示名
+  - `host_name`: 实际课程主讲人显示名；不要默认等于 owner_name
   - `should_record`: true / false
   - `course_name`: 优化后的课程名称
   - `course_year`: 根据 date 推断，如 2026 年开课为 "27考研"
@@ -82,6 +96,17 @@ prompt: |
   - `importance`: "必刷课程" 或 "常规课程"
   - `participant_count`: 整数（从 speaker_counts.json 读取）
   - `reasoning`: 一句话判断理由
+
+  主讲人判断规则：
+  - 不要默认使用妙记 owner 作为主讲人。25/26 历史课程经常由天天持有妙记，但实际主讲人不同。
+  - 世界文明史/文明史按稳定主讲人口径处理为泠泠七，除非人工复核后明确改正。
+  - 其他学科若逐字稿有实名说话人，按发言时长/字数占比确认主讲老师。
+  - 研讨、互评、交流类课程若多位实名说话人占比都较高，主讲人写“多人”。
+  - 若逐字稿只有泛称说话人，参考 VC host/cohost 和参会时长，但不要把妙记 owner 自动当主讲人。
+  - 其他学科老师会随年份变化，不做年份/学科硬映射。
+  - 仍无法确认时保留原主讲人或标记待核实，并在 reasoning 中说明证据不足。
+  - 将最终主讲人写入 `host_name`，`owner_name` 只保留妙记 owner 信息。
+  - Base 中 `主讲显示名` 是网站展示主讲人的优先字段，支持“多人”和别名归一；`主讲人/主持人` 是飞书人员字段，只有能解析到联系人时才同步写。
 
   判断完成后，使用 Write 或 Bash 工具生成 `/tmp/minutes_judgments.json`。
 
@@ -113,6 +138,12 @@ prompt: |
 
   默认输出到 `/tmp/site_export/`，可通过 `--output` 或 `COURSE_SYNC_OUTPUT_DIR` 改。
 
+  如果是远程服务器/另一台电脑的每日定时任务，并且需要直接推送网站 API，使用：
+  ```bash
+  ./daily_sync.sh --export-only --require-site-sync
+  ```
+  该模式只从 Base 导出并推送网站，不自动判断新妙记，不写 Base；缺少 `COURSE_SYNC_SITE_SYNC_URL` 或 `COURSE_SYNC_SITE_SYNC_TOKEN` 时会失败退出，便于 cron 监控。
+
   ## 步骤 6：总结报告
   用中文总结：
   1. 发现了多少条新妙记
@@ -126,6 +157,6 @@ prompt: |
   - **`lark-cli 未认证`**：运行 `lark-cli config init` 重新走 OAuth
   - **妙记搜不到**：检查 user 身份是否在 `wlbyzcky.feishu.cn` 域有访问权限
   - **Base 写入 401/403**：检查 user 身份是否有该 Base 表的读写权限
-  - **VC 参会统计全是 `not_matched`**：检查该妙记是否来自飞书视频会议录制，或 user 身份是否有会议记录权限
+  - **VC 参会统计全是 `not_matched`**：检查该妙记是否来自飞书视频会议录制，或 user 身份是否有会议记录权限；若 `search_attempts` 里出现 `minutes:minutes.artifacts:read`，先补该 user scope
   - **`vc meeting get` 401/403**：检查 `vc:meeting:readonly` / `vc:meeting.meetingevent:read` 等权限和当前 user 授权
   - **少数妙记未匹配**：可能是标题被改过、会议不是当前 user 组织/参与、录制关系不可见；该条按人工判断保守处理

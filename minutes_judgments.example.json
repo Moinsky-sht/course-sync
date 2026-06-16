@@ -1,5 +1,5 @@
 {
-  "_comment": "示例 judgment 数据。完整流程: 1) lark-cli 搜候选 → 2) 人工判断是否中传考研课程 → 3) mavis browser 抓发言人数量 → 4) 生成此文件 → 5) course_sync_lark.py --apply-judgments 写 Base",
+  "_comment": "示例 judgment 数据。完整流程: 1) lark-cli 搜候选 → 2) lark-cli VC API 获取参会峰值人数 → 3) 人工/LLM 判断是否中传考研课程 → 4) 生成此文件 → 5) course_sync_lark.py --apply-judgments 写 Base",
   "judgments": [
     {
       "token": "obcn3t4uyv3egq867ympj886",
@@ -16,7 +16,7 @@
       "course_category": "世界文明史",
       "importance": "必刷课程",
       "participant_count": 15,
-      "reasoning": "关键词对世界文明史+人类简史，且参与人数15人≥5，明确是中传考研相关课程"
+      "reasoning": "关键词对应世界文明史+人类简史，且参会峰值15人≥10，明确是中传考研相关课程"
     },
     {
       "token": "obcn4k34ztf63lu82669w5wg",
@@ -67,7 +67,7 @@
       "course_category": "其他课程",
       "importance": "常规课程",
       "participant_count": 4,
-      "reasoning": "关键词为'智能体系统开发'/'应用规划'，是内部技术规划会；且参与人数4人<5，不符合最低门槛"
+      "reasoning": "关键词为'智能体系统开发'/'应用规划'，是内部技术规划会；且参会峰值4人<10，不符合大课门槛"
     },
     {
       "token": "obcn8mga2798yabh29h27gp5",

@@ -1,40 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-fetch_speakers_via_browser.py — 用 mavis browser 抓取飞书妙记详情页的发言人数量
+fetch_speakers_via_browser.py — 通过 lark-cli VC API 获取飞书妙记对应会议的参会统计
 
-为什么不直接用 lark-cli？
-  飞书妙记 OpenAPI 没有任何 endpoint 返回参与人数。详情页面的"发言人 (N)"
-  标签是前端组件从会议关联数据中动态渲染的，必须通过浏览器抓 DOM 拿到。
+历史上这个脚本用 mavis browser 打开妙记页面读取头像数量。现在改为纯
+lark-cli / OpenAPI 链路：
 
-为什么不直接用 Playwright headless？
-  飞书 SPA 详情路由对 SSO 鉴权严格，headless 浏览器的 session cookies
-  在访问详情页时会被踢回登录页。
+  1. 读取 /tmp/minutes_candidates.json 中的 minute token、标题、日期、owner
+  2. 用 vc +search 在候选日期附近搜索会议记录，拿 meeting_id
+  3. 用 vc +recording 校验 meeting_id 对应的 minute_token
+  4. 用 vc meeting get --with-participants 获取参会峰值人数和参会人列表
 
-为什么用 mavis browser？
-  mavis browser 是 mavis daemon 提供的浏览器自动化，它通过 native messaging
-  连到你真实的 Chrome/Edge 浏览器（带登录态），所以可以直接访问 SPA 详情页
-  并抓取"发言人 (N)"。
+输出仍保持在 /tmp/speaker_counts.json，兼容旧工作流。
 
-前置:
-  1. 安装 mavis browser: mavis browser install
-  2. 在 Chrome 中加载扩展: chrome://extensions/ → 加载已解压 → 选 /Users/<you>/.mavis/browser-extension
-  3. 扩展 ID 必须匹配: ppnnfacnjgokfmbngkgbdgiigpbfgdba
-  4. 浏览器必须登录飞书 (用户态)
+字段口径：
+  - participant_count: 参会峰值人数，最适合判断一对一/小课/大课
+  - participant_count_accumulated: 累计参会人数
+  - unique_participant_count: participants 列表按 open_id 去重后的人数
 
 用法:
   python3 fetch_speakers_via_browser.py <token1> [<token2> ...]
   python3 fetch_speakers_via_browser.py --from-candidates /tmp/minutes_candidates.json
-
-输出:
-  /tmp/speaker_counts.json — {results: [{token, raw_name, speaker_count}, ...]}
-
-环境变量（可选）:
-  COURSE_SYNC_BROWSER_TOOL — 浏览器自动化 CLI（默认 mavis browser tool）
-  COURSE_SYNC_HOST         — 妙记域名（默认 wlbyzcky.feishu.cn）
 """
 
 import argparse
+from datetime import datetime, timedelta
 import json
 import os
 import re
@@ -42,107 +32,341 @@ import subprocess
 import sys
 import time
 
-BROWSER_TOOL = os.environ.get("COURSE_SYNC_BROWSER_TOOL", "mavis browser tool")
-HOST = os.environ.get("COURSE_SYNC_HOST", "wlbyzcky.feishu.cn")
+
 CANDIDATES_FILE = "/tmp/minutes_candidates.json"
 OUTPUT_FILE = "/tmp/speaker_counts.json"
-
-
-def mavis_browser(tool, args):
-    """Call mavis browser tool, return parsed JSON or raw dict."""
-    cmd = BROWSER_TOOL.split() + [tool, json.dumps(args)]
-    r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
-    out = (r.stdout or "").strip()
-    try:
-        return json.loads(out)
-    except json.JSONDecodeError:
-        return {"_raw_stdout": out, "_raw_stderr": (r.stderr or "").strip()}
-
-
-def check_browser_bridge():
-    """Verify mavis browser is installed and connected."""
-    r = subprocess.run(["mavis", "browser", "status"],
-                       capture_output=True, text=True, timeout=10)
-    if "connected" not in r.stdout:
-        log("❌ mavis browser 未连接，请先:")
-        log("   1. mavis browser install")
-        log("   2. 在 Chrome 中加载 /Users/<you>/.mavis/browser-extension 扩展")
-        return False
-    log("✅ mavis browser bridge 已连接")
-    return True
 
 
 def log(msg):
     print(f"[{time.strftime('%H:%M:%S')}] {msg}")
 
 
-def get_participant_count(token, max_retries=2):
-    """Navigate to a minute detail page and extract the participant count.
+def parse_json_output(stdout):
+    """Parse lark-cli JSON, tolerating progress lines before the JSON object."""
+    text = (stdout or "").strip()
+    if not text:
+        return {}
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
 
-    飞书妙记详情页有两个数字概念:
-    - 发言人 (N) — 主动说话的人（DOM 中可读出，但只是参与过发言的子集）
-    - 参与人数 (N) — 完整参会人数（包括只听不发言的人）
+    decoder = json.JSONDecoder()
+    for index, char in enumerate(text):
+        if char not in "[{":
+            continue
+        try:
+            obj, end = decoder.raw_decode(text[index:])
+        except json.JSONDecodeError:
+            continue
+        if text[index + end :].strip():
+            continue
+        return obj
+    return {"_raw_stdout": text}
 
-    参与人数的 DOM 结构:
-      <div class="ud__avatar-group-stacked">
-        <span class="ud__avatar">×K (具体头像)</span>
-        <span class="ud__avatar-neutral">
-          <span class="ud__avatar__text">+M</span> (溢出)
-        </span>
-      </div>
-    总参与人数 = K + M
 
-    Returns int or None on failure. Retries on cold cache.
-    """
-    url = f"https://{HOST}/minutes/{token}"
-    for attempt in range(1, max_retries + 2):
-        nav = mavis_browser("navigate", {"url": url})
-        if not nav.get("ok", True) and "_raw_stderr" in nav:
-            log(f"  navigate failed: {nav.get('_raw_stderr', '')[:200]}")
-            return None
+def lark_cli(*args, timeout=90):
+    cmd = ["lark-cli"] + list(args)
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    payload = parse_json_output(result.stdout)
+    if result.returncode != 0 and not payload:
+        return {
+            "ok": False,
+            "_returncode": result.returncode,
+            "_raw_stdout": (result.stdout or "").strip(),
+            "_raw_stderr": (result.stderr or "").strip(),
+        }
+    if isinstance(payload, dict):
+        payload.setdefault("_returncode", result.returncode)
+        if result.stderr:
+            payload.setdefault("_raw_stderr", result.stderr.strip())
+    return payload
 
-        time.sleep(7)  # let SPA render (head header is last to populate)
 
-        # 1) 主方案: 用 .meeting-info / [class*=meeting-info] / [class*=participant] 找
-        #    飞书妙记 header 区域用这个 class 渲染参与人 (avatar group)
-        out = mavis_browser("query", {
-            "selector": ".meeting-info, [class*=meeting-info], [class*=participant]",
-            "what": "exists"
-        })
-        exists_text = out.get("content", "") if isinstance(out, dict) else ""
-        plus_match = re.search(r"\+(\d+)", exists_text)
-        plus_n = int(plus_match.group(1)) if plus_match else 0
+def to_int(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
-        # 2) 抓页面里"发言人 (K)" 文本 — 这 K 是 avatar 数
-        out = mavis_browser("query", {"selector": "text=发言人", "what": "text"})
-        text = out.get("content", "") if isinstance(out, dict) else ""
-        sp_match = re.search(r"发言人 \((\d+)\)", text)
-        speaker_n = int(sp_match.group(1)) if sp_match else 0
 
-        if speaker_n > 0 or plus_n > 0:
-            return speaker_n + plus_n
+def compact_text(value):
+    return re.sub(r"\s+", " ", str(value or "")).strip()
 
-        # 兜底: 直接抓 avatar group 计数
-        out = mavis_browser("query", {
-            "selector": ".ud__avatar-group-stacked > .ud__avatar",
-            "what": "exists"
-        })
-        if isinstance(out, dict) and out.get("content"):
-            # exists 返回数量
-            try:
-                k = int(str(out["content"]).strip())
-                if k > 0:
-                    return k + plus_n
-            except (ValueError, TypeError):
-                pass
 
-        if attempt < max_retries + 1:
-            log(f"  retrying (attempt {attempt}/{max_retries})...")
-            time.sleep(2)
-        else:
-            log(f"  no participants detected (probe: {exists_text!r})")
-            return None
+def title_queries(title):
+    title = compact_text(title)
+    candidates = [
+        title,
+        re.sub(r"[《》【】\[\]（）()#：:；;，,、|｜]+", " ", title),
+        re.split(r"[；;，,|｜]", title)[0],
+        title.split(" ")[0],
+    ]
+    result = []
+    for item in candidates:
+        item = compact_text(item)
+        if len(item) < 2:
+            continue
+        if item not in result:
+            result.append(item)
+    return result
+
+
+def date_window(date_str, days_before=1, days_after=2):
+    try:
+        day = datetime.fromisoformat(date_str[:10])
+    except (TypeError, ValueError):
+        end = datetime.now()
+        start = end - timedelta(days=7)
+        return start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
+    start = day - timedelta(days=days_before)
+    end = day + timedelta(days=days_after)
+    return start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
+
+
+def get_current_open_id():
+    resp = lark_cli("api", "GET", "/open-apis/authen/v1/user_info")
+    if resp.get("code") == 0:
+        return (resp.get("data") or {}).get("open_id")
     return None
+
+
+def search_meetings(candidate, current_open_id=None):
+    """Return candidate meeting records from several low-noise VC searches."""
+    title = candidate.get("raw_name") or ""
+    start, end = date_window(candidate.get("date", ""))
+    seen = set()
+    meetings = []
+    attempts = []
+
+    def add_items(label, resp):
+        attempts.append(label)
+        if not resp.get("ok"):
+            return
+        for item in (resp.get("data") or {}).get("items") or []:
+            meeting_id = item.get("id")
+            if not meeting_id or meeting_id in seen:
+                continue
+            seen.add(meeting_id)
+            meetings.append(item)
+
+    for query in title_queries(title):
+        resp = lark_cli(
+            "vc",
+            "+search",
+            "--query",
+            query,
+            "--start",
+            start,
+            "--end",
+            end,
+            "--page-size",
+            "30",
+            "--format",
+            "json",
+        )
+        add_items(f"query:{query}", resp)
+        if meetings:
+            break
+
+    owner_id = candidate.get("owner_id") or candidate.get("owner")
+    if owner_id and str(owner_id).startswith("ou_"):
+        resp = lark_cli(
+            "vc",
+            "+search",
+            "--organizer-ids",
+            owner_id,
+            "--start",
+            start,
+            "--end",
+            end,
+            "--page-size",
+            "30",
+            "--format",
+            "json",
+        )
+        add_items(f"organizer:{owner_id}", resp)
+
+    if current_open_id:
+        resp = lark_cli(
+            "vc",
+            "+search",
+            "--participant-ids",
+            current_open_id,
+            "--start",
+            start,
+            "--end",
+            end,
+            "--page-size",
+            "30",
+            "--format",
+            "json",
+        )
+        add_items(f"participant:{current_open_id}", resp)
+
+    return meetings, attempts
+
+
+def search_visible_meetings(candidate, current_open_id=None):
+    """Fallback search over visible meetings near the candidate date."""
+    seen = set()
+    meetings = []
+    attempts = []
+
+    def add_items(label, resp):
+        attempts.append(label)
+        if not resp.get("ok"):
+            return
+        for item in (resp.get("data") or {}).get("items") or []:
+            meeting_id = item.get("id")
+            if not meeting_id or meeting_id in seen:
+                continue
+            seen.add(meeting_id)
+            meetings.append(item)
+
+    for days_before, days_after, label in ((2, 3, "near-visible"), (5, 5, "wide-visible")):
+        start, end = date_window(candidate.get("date", ""), days_before=days_before, days_after=days_after)
+        resp = lark_cli(
+            "vc",
+            "+search",
+            "--start",
+            start,
+            "--end",
+            end,
+            "--page-size",
+            "30",
+            "--format",
+            "json",
+        )
+        add_items(f"{label}:{start}..{end}", resp)
+
+        if current_open_id:
+            resp = lark_cli(
+                "vc",
+                "+search",
+                "--participant-ids",
+                current_open_id,
+                "--start",
+                start,
+                "--end",
+                end,
+                "--page-size",
+                "30",
+                "--format",
+                "json",
+            )
+            add_items(f"{label}-participant:{start}..{end}", resp)
+
+    return meetings, attempts
+
+
+def recordings_for(meeting_ids):
+    if not meeting_ids:
+        return []
+    recordings = []
+    for index in range(0, len(meeting_ids), 20):
+        chunk = meeting_ids[index : index + 20]
+        resp = lark_cli(
+            "vc",
+            "+recording",
+            "--meeting-ids",
+            ",".join(chunk),
+            "--format",
+            "json",
+            timeout=120,
+        )
+        recordings.extend((resp.get("data") or {}).get("recordings") or [])
+    return recordings
+
+
+def meeting_participants(meeting_id):
+    resp = lark_cli(
+        "vc",
+        "meeting",
+        "get",
+        "--meeting-id",
+        meeting_id,
+        "--with-participants",
+        "--user-id-type",
+        "open_id",
+        "--format",
+        "json",
+        timeout=120,
+    )
+    if resp.get("code") != 0:
+        return None, resp
+    return (resp.get("data") or {}).get("meeting") or {}, resp
+
+
+def resolve_participant_count(candidate, current_open_id=None):
+    token = candidate.get("token")
+    meetings, attempts = search_meetings(candidate, current_open_id=current_open_id)
+    meeting_ids = [item["id"] for item in meetings if item.get("id")]
+    recordings = recordings_for(meeting_ids)
+
+    def matched_result(recordings, attempts):
+        for recording in recordings:
+            if recording.get("minute_token") != token:
+                continue
+            meeting_id = recording.get("meeting_id")
+            meeting, raw = meeting_participants(meeting_id)
+            if meeting is None:
+                return {
+                    "token": token,
+                    "raw_name": candidate.get("raw_name"),
+                    "participant_count": None,
+                    "match_status": "meeting_detail_failed",
+                    "meeting_id": meeting_id,
+                    "error": raw,
+                    "search_attempts": attempts,
+                }
+            participants = meeting.get("participants") or []
+            unique_ids = {p.get("id") for p in participants if p.get("id")}
+            return {
+                "token": token,
+                "raw_name": candidate.get("raw_name"),
+                "participant_count": to_int(meeting.get("participant_count")),
+                "participant_count_accumulated": to_int(meeting.get("participant_count_accumulated")),
+                "participant_records_count": len(participants),
+                "unique_participant_count": len(unique_ids),
+                "meeting_id": meeting_id,
+                "meeting_topic": meeting.get("topic"),
+                "match_status": "matched",
+                "search_attempts": attempts,
+            }
+        return None
+
+    result = matched_result(recordings, attempts)
+    if result:
+        return result
+
+    fallback_meetings, fallback_attempts = search_visible_meetings(
+        candidate,
+        current_open_id=current_open_id,
+    )
+    known_ids = set(meeting_ids)
+    fallback_ids = [
+        item["id"]
+        for item in fallback_meetings
+        if item.get("id") and item.get("id") not in known_ids
+    ]
+    if fallback_ids:
+        recordings.extend(recordings_for(fallback_ids))
+        attempts.extend(fallback_attempts)
+        meeting_ids.extend(fallback_ids)
+
+    result = matched_result(recordings, attempts)
+    if result:
+        return result
+
+    return {
+        "token": token,
+        "raw_name": candidate.get("raw_name"),
+        "participant_count": None,
+        "match_status": "not_matched",
+        "candidate_meeting_count": len(meeting_ids),
+        "search_attempts": attempts,
+    }
 
 
 def load_candidates(path):
@@ -152,38 +376,56 @@ def load_candidates(path):
 
 
 def main():
-    p = argparse.ArgumentParser(description="Fetch speaker counts via mavis browser")
-    p.add_argument("tokens", nargs="*", help="Minute tokens to fetch")
-    p.add_argument("--from-candidates", metavar="PATH",
-                   help="Read tokens from /tmp/minutes_candidates.json (or any path)")
-    p.add_argument("--output", default=OUTPUT_FILE,
-                   help=f"Output JSON path (default {OUTPUT_FILE})")
-    args = p.parse_args()
-
-    if not check_browser_bridge():
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Fetch participant counts via lark-cli VC API")
+    parser.add_argument("tokens", nargs="*", help="Minute tokens to fetch")
+    parser.add_argument(
+        "--from-candidates",
+        metavar="PATH",
+        help="Read tokens from /tmp/minutes_candidates.json (or any compatible path)",
+    )
+    parser.add_argument(
+        "--output",
+        default=OUTPUT_FILE,
+        help=f"Output JSON path (default {OUTPUT_FILE})",
+    )
+    args = parser.parse_args()
 
     if args.from_candidates:
-        candidates = load_candidates(args.from_candidates)
-        targets = [(c["token"], c.get("raw_name", "?")) for c in candidates]
+        targets = load_candidates(args.from_candidates)
     elif args.tokens:
-        targets = [(t, "?") for t in args.tokens]
+        targets = [{"token": token, "raw_name": token, "date": ""} for token in args.tokens]
     else:
-        log(f"❌ 至少给一个 token 或 --from-candidates")
+        log("❌ 至少给一个 token 或 --from-candidates")
         sys.exit(2)
 
-    log(f"📋 共 {len(targets)} 个目标需要抓取")
+    current_open_id = get_current_open_id()
+    log(f"📋 共 {len(targets)} 个目标需要匹配 VC 参会统计")
     results = []
-    for tok, name in targets:
-        log(f"[{tok}] {name}")
-        n = get_participant_count(tok)
-        log(f"  参与人数 = {n}")
-        results.append({"token": tok, "raw_name": name, "participant_count": n})
+    for candidate in targets:
+        log(f"[{candidate.get('token')}] {candidate.get('raw_name', '?')}")
+        result = resolve_participant_count(candidate, current_open_id=current_open_id)
+        if result.get("match_status") == "matched":
+            log(
+                "  参会峰值 = "
+                f"{result.get('participant_count')}；累计 = "
+                f"{result.get('participant_count_accumulated')}；"
+                f"去重 = {result.get('unique_participant_count')}"
+            )
+        else:
+            log(f"  未匹配到会议记录 ({result.get('match_status')})")
+        results.append(result)
 
     with open(args.output, "w", encoding="utf-8") as f:
-        json.dump({"results": results,
-                   "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S")},
-                  f, ensure_ascii=False, indent=2)
+        json.dump(
+            {
+                "results": results,
+                "generated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                "method": "lark-cli vc meeting get --with-participants",
+            },
+            f,
+            ensure_ascii=False,
+            indent=2,
+        )
     log(f"\n✅ saved {args.output} ({len(results)} entries)")
 
 

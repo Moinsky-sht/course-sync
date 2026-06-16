@@ -26,6 +26,15 @@ set -euo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 cd "$SCRIPT_DIR"
 
+for env_file in "$SCRIPT_DIR/.env" "$SCRIPT_DIR/.env.local"; do
+  if [[ -f "$env_file" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$env_file"
+    set +a
+  fi
+done
+
 DAYS=7
 MODE="full"
 FORCE_JUDGMENTS=0
@@ -58,11 +67,16 @@ check_environment() {
   python3 scripts/course_sync_lark.py --check-env
 
   log "Base: ${COURSE_SYNC_BASE_TOKEN:-PK5BbGQx4aoeres9oBCchWKPnfd}/${COURSE_SYNC_TABLE_ID:-tblWTN8jkeExIFa0}"
-  if [[ -n "${COURSE_SYNC_SITE_SYNC_URL:-}" && -n "${COURSE_SYNC_SITE_SYNC_TOKEN:-}" ]]; then
-    log "网站同步 API: 已配置"
+  local site_url="${COURSE_SYNC_SITE_SYNC_URL:-https://wlbycuc.cn/api/integrations/courses/sync}"
+  if [[ -n "${COURSE_SYNC_SITE_SYNC_TOKEN:-}" ]]; then
+    log "网站同步 API: 已配置 (${site_url})"
   else
-    log "网站同步 API: 未配置（只会本地导出，不会推送网站）"
-    log "需要每日更新网站时请配置 COURSE_SYNC_SITE_SYNC_URL 和 COURSE_SYNC_SITE_SYNC_TOKEN"
+    log "网站同步 API: 未配置 Token（只会本地导出，不会推送网站）"
+    log "需要每日更新网站时请配置 COURSE_SYNC_SITE_SYNC_TOKEN"
+    log "默认 API: ${site_url}"
+    if [[ "$REQUIRE_SITE_SYNC" == "1" ]]; then
+      return 1
+    fi
   fi
 }
 

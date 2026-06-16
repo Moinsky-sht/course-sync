@@ -37,7 +37,7 @@ Environment variables can override defaults:
 - `COURSE_SYNC_DAYS_BACK`
 - `COURSE_SYNC_HOST`
 - `COURSE_SYNC_OUTPUT_DIR`
-- `COURSE_SYNC_SITE_SYNC_URL` — website API, normally `https://wlbycuc.cn/api/integrations/courses/sync`
+- `COURSE_SYNC_SITE_SYNC_URL` — website API; defaults to `https://wlbycuc.cn/api/integrations/courses/sync`
 - `COURSE_SYNC_SITE_SYNC_TOKEN` — website integration token
 - `COURSE_SYNC_EXCLUDED_TOKENS` — comma-separated minute tokens to exclude from site export
 
@@ -240,9 +240,11 @@ cd /Users/moinsky/.codex/skills/course-sync
 python3 site_export.py
 ```
 
-If `COURSE_SYNC_SITE_SYNC_URL` and `COURSE_SYNC_SITE_SYNC_TOKEN` are set,
-`site_export.py` posts `courses.json` to the website after local export. Push
-failure does not delete or rewrite the local export files.
+If `COURSE_SYNC_SITE_SYNC_TOKEN` is set, `site_export.py` posts
+`courses.json` to the website after local export. The sync URL defaults to
+`https://wlbycuc.cn/api/integrations/courses/sync` and can be overridden with
+`COURSE_SYNC_SITE_SYNC_URL`. Push failure does not delete or rewrite the local
+export files.
 
 Default output directory: `/tmp/site_export/`.
 
@@ -257,12 +259,14 @@ Expected files:
 For remote cron jobs that must update the website, use:
 
 ```bash
+cp .env.example .env
+# edit .env and fill COURSE_SYNC_SITE_SYNC_TOKEN
+./daily_sync.sh --check-env --require-site-sync
 ./daily_sync.sh --export-only --require-site-sync
 ```
 
-This fails loudly if `COURSE_SYNC_SITE_SYNC_URL` or
-`COURSE_SYNC_SITE_SYNC_TOKEN` is missing, or if the website API rejects the
-payload. The full collection flow still requires a fresh agent-generated
+This fails loudly if `COURSE_SYNC_SITE_SYNC_TOKEN` is missing, or if the website
+API rejects the payload. The full collection flow still requires a fresh agent-generated
 `/tmp/minutes_judgments.json` before writing Base, so a safe unattended daily
 job should usually export Base to the website rather than auto-approving new
 minutes.

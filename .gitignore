@@ -16,6 +16,8 @@ __pycache__/
 venv/
 
 # 敏感数据（不要提交）
+.env
+.env.local
 /tmp/feishu_cookies.json
 /tmp/minutes_candidates.json
 /tmp/minutes_judgments.json

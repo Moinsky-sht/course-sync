@@ -1,62 +1,51 @@
 #!/usr/bin/env bash
-# install.sh — 在 mavis agent 的 skills 目录中安装 course-sync skill
+# install.sh — 安装 / 更新 course-sync skill
 #
 # 用法:
-#   ./install.sh              # 安装到当前用户 ~/.mavis/agents/mavis/skills/course-sync
-#   ./install.sh /path/to/mavis   # 安装到指定 mavis root
+#   ./install.sh                    # 安装到当前用户 ~/.codex/skills/course-sync
+#   ./install.sh /path/to/skills     # 安装到指定 skills 根目录
 #
 # 之后:
-#   mavis skill list  应该能看到 "course-sync"
+#   codex / agent 重启后应能看到 "course-sync"
 
 set -euo pipefail
 
-MAVIS_ROOT="${1:-$HOME/.mavis}"
+SKILLS_ROOT="${1:-${CODEX_HOME:-$HOME/.codex}/skills}"
 SKILL_NAME="course-sync"
-TARGET="$MAVIS_ROOT/agents/mavis/skills/$SKILL_NAME"
+TARGET="$SKILLS_ROOT/$SKILL_NAME"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 if [[ -d "$TARGET" ]]; then
-  echo "❌ $TARGET 已存在，删除后重试或手动更新"
-  exit 1
+  echo "🔄 更新 $TARGET"
+else
+  echo "📦 安装到 $TARGET"
 fi
 
-echo "📦 安装到 $TARGET"
-mkdir -p "$TARGET/scripts" "$TARGET/references" "$TARGET/assets"
+mkdir -p "$TARGET/scripts"
 
-cp SKILL.md "$TARGET/"
-cp daily_sync.sh "$TARGET/"
+cp "$SCRIPT_DIR/SKILL.md" "$TARGET/"
+cp "$SCRIPT_DIR/README.md" "$TARGET/"
+cp "$SCRIPT_DIR/course-sync.yaml" "$TARGET/"
+cp "$SCRIPT_DIR/daily_sync.sh" "$TARGET/"
+cp "$SCRIPT_DIR/.env.example" "$TARGET/"
 chmod +x "$TARGET/daily_sync.sh"
 
-cp scripts/course_sync_lark.py "$TARGET/scripts/"
-cp scripts/fetch_speakers_via_browser.py "$TARGET/scripts/"
-cp scripts/site_export.py "$TARGET/scripts/"
-chmod +x "$TARGET/scripts/"*.py
+cp "$SCRIPT_DIR/course_sync_lark.py" "$TARGET/"
+cp "$SCRIPT_DIR/fetch_speakers_via_browser.py" "$TARGET/"
+cp "$SCRIPT_DIR/site_export.py" "$TARGET/"
+cp "$SCRIPT_DIR/sync_feishu_minutes.py" "$TARGET/"
+cp "$SCRIPT_DIR/minutes_judgments.example.json" "$TARGET/"
 
-cp references/README.md "$TARGET/references/"
-cp references/SKILL.md "$TARGET/references/"
-cp references/minutes_judgments.example.json "$TARGET/references/"
+cp "$SCRIPT_DIR/course_sync_lark.py" "$TARGET/scripts/"
+cp "$SCRIPT_DIR/fetch_speakers_via_browser.py" "$TARGET/scripts/"
+cp "$SCRIPT_DIR/site_export.py" "$TARGET/scripts/"
+chmod +x "$TARGET/scripts/"*.py
 
 echo "✅ 安装完成"
 echo
-echo "验证:"
-mavis skill list 2>/dev/null | python3 -c "
-import json, sys
-try:
-    d = json.load(sys.stdin)
-    for s in d['skills']:
-        if s['name'] == 'course-sync':
-            print(f\"  ✅ {s['name']} 已注册\")
-            print(f\"     位置: {s['location']}\")
-            print(f\"     描述: {s.get('description', '')[:80]}...\")
-            break
-    else:
-        print('  ❌ 找不到 course-sync')
-except Exception as e:
-    print(f'  (验证失败: {e})')
-" 2>/dev/null || echo "  (跳过验证 - mavis 命令不可用)"
-
-echo
 echo "下一步:"
-echo "  1. 配置 cron: 0 23 * * * $TARGET/daily_sync.sh >> /var/log/cs.log 2>&1"
-echo "  2. 或在 Mavis 对话框里说: '同步课程' / '每日课程同步'"
+echo "  1. cp $TARGET/.env.example $TARGET/.env"
+echo "  2. 在 $TARGET/.env 写入 COURSE_SYNC_SITE_SYNC_TOKEN"
+echo "  3. 检查: cd $TARGET && ./daily_sync.sh --check-env --require-site-sync"
+echo "  4. 定时: cd $TARGET && ./daily_sync.sh --export-only --require-site-sync"

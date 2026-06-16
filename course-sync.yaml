@@ -25,6 +25,13 @@ prompt: |
   ```
   输出显示 `lark-cli 就绪 (user: ...)` 才继续。如果失败请按脚本提示处理（`npm i -g lark-cli`、`lark-cli config init` 等）。
 
+  如果本次目标只是让另一台机器把飞书 Base 只读同步到网站，不需要收集新妙记或写 Base。该机器只需在 skill 目录创建 `.env`，填入 `COURSE_SYNC_SITE_SYNC_TOKEN`，然后运行：
+  ```bash
+  ./daily_sync.sh --check-env --require-site-sync
+  ./daily_sync.sh --export-only --require-site-sync
+  ```
+  `COURSE_SYNC_SITE_SYNC_URL` 默认是 `https://wlbycuc.cn/api/integrations/courses/sync`，可省略。该模式不依赖本地网站服务器，不触发部署。
+
   ## 步骤 1：收集候选妙记
   运行：
   ```bash
@@ -142,7 +149,7 @@ prompt: |
   ```bash
   ./daily_sync.sh --export-only --require-site-sync
   ```
-  该模式只从 Base 导出并推送网站，不自动判断新妙记，不写 Base；缺少 `COURSE_SYNC_SITE_SYNC_URL` 或 `COURSE_SYNC_SITE_SYNC_TOKEN` 时会失败退出，便于 cron 监控。
+  该模式只从 Base 导出并推送网站，不自动判断新妙记，不写 Base；缺少 `COURSE_SYNC_SITE_SYNC_TOKEN` 或网站 API 拒绝时会失败退出，便于 cron 监控。
 
   ## 步骤 6：总结报告
   用中文总结：

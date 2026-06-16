@@ -13,7 +13,7 @@ site_export.py — 从飞书 Base 导出课程数据，给个人网站消费
   COURSE_SYNC_BASE_TOKEN  — 飞书 Base app_token
   COURSE_SYNC_TABLE_ID    — Base 表 ID
   COURSE_SYNC_OUTPUT_DIR  — 输出目录（默认 /tmp/site_export）
-  COURSE_SYNC_SITE_SYNC_URL — 网站课程同步接口
+  COURSE_SYNC_SITE_SYNC_URL — 网站课程同步接口（默认 https://wlbycuc.cn/api/integrations/courses/sync）
   COURSE_SYNC_SITE_SYNC_TOKEN — 网站同步接口 Token
 
 用法:
@@ -40,7 +40,8 @@ BASE_TOKEN = os.environ.get("COURSE_SYNC_BASE_TOKEN", "PK5BbGQx4aoeres9oBCchWKPn
 TABLE_ID = os.environ.get("COURSE_SYNC_TABLE_ID", "tblWTN8jkeExIFa0")
 OUTPUT_DIR = os.environ.get("COURSE_SYNC_OUTPUT_DIR", "/tmp/site_export")
 LARK_CLI_BIN = os.environ.get("LARK_CLI_BIN", "lark-cli")
-SITE_SYNC_URL = os.environ.get("COURSE_SYNC_SITE_SYNC_URL") or os.environ.get("COURSE_SYNC_SITE_PUSH_URL", "")
+DEFAULT_SITE_SYNC_URL = "https://wlbycuc.cn/api/integrations/courses/sync"
+SITE_SYNC_URL = os.environ.get("COURSE_SYNC_SITE_SYNC_URL") or os.environ.get("COURSE_SYNC_SITE_PUSH_URL", DEFAULT_SITE_SYNC_URL)
 SITE_SYNC_TOKEN = os.environ.get("COURSE_SYNC_SITE_SYNC_TOKEN") or os.environ.get("COURSE_SYNC_SITE_PUSH_TOKEN", "")
 
 GENERIC_HOSTS = {"", "天天", "天"}
@@ -224,12 +225,12 @@ def render_grouped_index(courses):
 
 def push_courses_to_site(full_path, require=False):
     """Push courses.json to the website integration API when configured."""
-    if not SITE_SYNC_URL or not SITE_SYNC_TOKEN:
+    if not SITE_SYNC_TOKEN:
         if require:
             raise RuntimeError(
-                "COURSE_SYNC_SITE_SYNC_URL 和 COURSE_SYNC_SITE_SYNC_TOKEN 必须同时配置"
+                "COURSE_SYNC_SITE_SYNC_TOKEN 必须配置；COURSE_SYNC_SITE_SYNC_URL 可省略，默认使用 wlbycuc.cn 课程同步接口"
             )
-        print("ℹ️ Website sync skipped: COURSE_SYNC_SITE_SYNC_URL/TOKEN not configured")
+        print("ℹ️ Website sync skipped: COURSE_SYNC_SITE_SYNC_TOKEN not configured")
         return
 
     try:

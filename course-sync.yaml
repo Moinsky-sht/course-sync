@@ -2,7 +2,7 @@ name: course-sync
 description: |
   自动同步飞书妙记到 Base 表格课程记录。
   当用户发送 Base 链接或说"同步课程"时触发。
-  流程：lark-cli 拉取候选妙记 → mavis browser 抓参与人数 → Claude 判断该不该录及分类 → lark-cli 写入 Base。
+  流程：lark-cli 拉取候选妙记 → lark-cli VC API 获取参会统计 → Claude 判断该不该录及分类 → lark-cli 写入 Base。
   替代旧版 Playwright/cookies 方案。无需任何外部 LLM API key。
 
 triggers:
@@ -37,19 +37,20 @@ prompt: |
 
   输出 `/tmp/minutes_candidates.json`。
 
-  ## 步骤 2：抓取参与人数
+  ## 步骤 2：获取 VC 参会统计
   运行：
   ```bash
   python3 fetch_speakers_via_browser.py --from-candidates /tmp/minutes_candidates.json
   ```
-  脚本会用 **mavis browser**（用户的真实 Chrome/Edge，已登录飞书）打开每条妙记的 SPA 详情页，从 DOM 中读取**参与人数**（= 头像数 + 溢出"+N" 文本，而不是只看"发言人 (N)"）。
-
-  **前置条件**（一次性）：
-  - `mavis browser install` 已运行
-  - Chrome/Edge 已加载 mavis browser 扩展（ID: `ppnnfacnjgokfmbngkgbdgiigpbfgdba`）
-  - 浏览器中已登录飞书
+  脚本不会打开浏览器。它会用 `lark-cli vc +search` 在候选日期附近搜索会议，用 `lark-cli vc +recording` 校验会议录制对应的 minute token，再用 `lark-cli vc meeting get --with-participants` 读取 VC 会议参会统计。
 
   输出 `/tmp/speaker_counts.json`。
+
+  重点字段：
+  - `participant_count`: 参会峰值人数，优先用于判断一对一/小会议/正式大课
+  - `participant_count_accumulated`: 累计参会人数
+  - `unique_participant_count`: participants 列表按 open_id 去重的人数
+  - `match_status`: `matched` 表示已确认会议和妙记 token 对应；`not_matched` 表示没有可靠匹配，判断时应更保守
 
   ## 步骤 3：Claude 判断
   读取 `/tmp/minutes_candidates.json` 和 `/tmp/speaker_counts.json`，合并成完整候选数据。
@@ -57,10 +58,12 @@ prompt: |
   你的身份是「课程记录审核助手」。判断标准：
   - **应该录入**（`should_record: true`）：
     - 正式课程、公开课、模拟面试、押题课、复试课、报考分析课、班会课、开班课、写作指导课等与学生培训相关的内容
-    - **且** 参与人数（participant_count）≥ 5
+    - **且** 参会峰值人数（participant_count）一般应 ≥ 10
   - **不应该录入**（`should_record: false`）：
     - 内部闲聊会议、临时视频会议、OPC 培训、营前培训、个人成长讨论、园丁会议、非学生培训类的内部会议
-    - 参与人数 < 5（一对一、少数人会议）
+    - participant_count < 10 的一对一交流、少数人会议、简单一对多非大课
+
+  如果 participant_count < 10，但标题和上下文明显指向应归档的学生侧课程（例如模拟面试、小班专项课），可以录入，但 reasoning 必须说明原因。若 VC 未匹配到参会统计，优先按标题、时长、owner 和已有课程体系判断；不确定时跳过。
 
   对每一条，输出一个判断对象，字段如下：
   - `token`: 保持原值
@@ -123,6 +126,6 @@ prompt: |
   - **`lark-cli 未认证`**：运行 `lark-cli config init` 重新走 OAuth
   - **妙记搜不到**：检查 user 身份是否在 `wlbyzcky.feishu.cn` 域有访问权限
   - **Base 写入 401/403**：检查 user 身份是否有该 Base 表的读写权限
-  - **mavis browser `bridge not connected`**：Chrome 扩展未加载或 native host 未注册，重新 `mavis browser install`
-  - **详情页被踢回登录**：mavis browser 没有用户登录态，让用户在浏览器中登录飞书
-  - **参与人数抓成 0**：页面 SPA 还没渲染完，把脚本里 `time.sleep(5)` 调大
+  - **VC 参会统计全是 `not_matched`**：检查该妙记是否来自飞书视频会议录制，或 user 身份是否有会议记录权限
+  - **`vc meeting get` 401/403**：检查 `vc:meeting:readonly` / `vc:meeting.meetingevent:read` 等权限和当前 user 授权
+  - **少数妙记未匹配**：可能是标题被改过、会议不是当前 user 组织/参与、录制关系不可见；该条按人工判断保守处理

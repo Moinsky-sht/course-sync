@@ -16,7 +16,7 @@
 #   - judgments.json 必须覆盖今天 candidates 全部 token，否则拒绝 apply
 #     （避免旧的 judgments 直接套用造成的脏写）
 #   - judgments.json 文件 mtime > candidates.json mtime，否则警告（防止套旧）
-#   - mavis browser 不在线时跳过 Step 2，judgment 时不参考参与人数
+#   - 通过 lark-cli VC API 获取会议参会峰值人数，judgment 时优先参考该字段
 #   - apply-judgments 仍可单独跑（不在此脚本内强制校验）
 
 set -euo pipefail
@@ -109,28 +109,14 @@ PYEOF
 
 # ====== 主流程 ======
 
-SKIP_BROWSER=0
-
 if [[ "$MODE" == "full" || "$MODE" == "collect" ]]; then
   log "=== Step 1: 收集候选 ==="
   python3 scripts/course_sync_lark.py --collect-only
 
-  log "=== Step 1.5: 检查 mavis browser 连接 ==="
-  if mavis browser status 2>&1 | grep -q "Native host: connected"; then
-    log "  ✅ mavis browser 已连接"
-  else
-    log "  ⚠️ mavis browser 未连接 (Native host: not connected)"
-    log "     Edge 扩展可能断开 — 跳过参与人数抓取"
-    log "     judgment 时不参考参与人数，需要人工更谨慎"
-    SKIP_BROWSER=1
-  fi
-
-  if [[ "$SKIP_BROWSER" == "0" ]]; then
-    log "=== Step 2: 抓参与人数 ==="
-    python3 scripts/fetch_speakers_via_browser.py \
-      --from-candidates /tmp/minutes_candidates.json || \
-      log "  ⚠️ 抓取失败（部分可能 None），可手动重试"
-  fi
+  log "=== Step 2: 获取 VC 参会统计 ==="
+  python3 scripts/fetch_speakers_via_browser.py \
+    --from-candidates /tmp/minutes_candidates.json || \
+    log "  ⚠️ VC 参会统计失败（部分可能 None），可手动重试或人工判断"
 fi
 
 if [[ "$MODE" == "full" ]]; then

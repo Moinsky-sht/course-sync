@@ -284,7 +284,9 @@ def get_existing_records():
                         "--base-token", BASE_TOKEN,
                         "--table-id", TABLE_ID,
                         "--limit", str(limit),
-                        "--offset", str(offset))
+                        "--offset", str(offset),
+                        "--format", "json",
+                        "--as", "user")
         if not resp.get("ok"):
             log(f"❌ 获取 Base 记录失败: {resp}")
             break

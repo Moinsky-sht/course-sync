@@ -34,10 +34,11 @@ from datetime import datetime, timedelta, timezone
 BASE_TOKEN = os.environ.get("COURSE_SYNC_BASE_TOKEN", "PK5BbGQx4aoeres9oBCchWKPnfd")
 TABLE_ID = os.environ.get("COURSE_SYNC_TABLE_ID", "tblWTN8jkeExIFa0")
 OUTPUT_DIR = os.environ.get("COURSE_SYNC_OUTPUT_DIR", "/tmp/site_export")
+LARK_CLI_BIN = os.environ.get("LARK_CLI_BIN", "lark-cli")
 
 
 def lark_cli(*args):
-    cmd = ["/Users/tian/.npm-global/bin/lark-cli"] + list(args)
+    cmd = [LARK_CLI_BIN] + list(args)
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
     try:
         return json.loads(r.stdout)
@@ -55,7 +56,9 @@ def fetch_all_records():
                      "--base-token", BASE_TOKEN,
                      "--table-id", TABLE_ID,
                      "--limit", str(limit),
-                     "--offset", str(offset))
+                     "--offset", str(offset),
+                     "--format", "json",
+                     "--as", "user")
         if not r.get("ok"):
             print(f"❌ Base fetch failed: {r}", file=sys.stderr)
             break
